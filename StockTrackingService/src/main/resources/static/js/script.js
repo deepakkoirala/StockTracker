@@ -12,5 +12,11 @@ app.controller('mainCtrl', function($scope, $http) {
         {symbol:"AMZ", value: 123123}
     ]
 
+    $http.get("/stock-track/subscribe/BINANCE:BTCUSDT")
+    .then(function(response) {
+        let data = response.data;
+        console.log(data);
+    });
+
 
 });

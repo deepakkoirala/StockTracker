@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.stock.track.config.Config;
 import org.stock.track.pojo.SubscribeResponse;
 import org.stock.track.websocket.StockClientClient;
 
