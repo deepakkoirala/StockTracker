@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+    crossorigin="anonymous"
+  />
+  <link href="css/style.css" rel="stylesheet" />
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <script src="js/script.js"></script>
+
+  <body>
+    <div class="container" ng-app="mainApp">
+        <h1>Real Time Ticker</h1>
+      <div class="row" ng-controller="mainCtrl">
+          <div class="col-3" ng-repeat="x in stockData">
+            <div class="c_tik">
+                <h2>{{x.symbol}}</h2>
+                <h3>{{x.value}}</h3>
+            </div>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
