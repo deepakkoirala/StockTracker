@@ -36,7 +36,7 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
       // $scope.stockData[ind].value = data.price;
       if(err) {
         setTimeout(()=>{
-          console.log("Error, reconnecting...");
+          console.log("Error, reconnecting in 5 Seconds...");
           connectWebSkt();
         },5000)
       }
