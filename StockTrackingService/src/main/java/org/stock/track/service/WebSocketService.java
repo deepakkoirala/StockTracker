@@ -4,13 +4,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.stock.track.pojo.SubscribeResponse;
 import org.stock.track.websocket.StockClientClient;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 
 @Service
 public class WebSocketService {
