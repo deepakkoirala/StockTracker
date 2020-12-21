@@ -71,7 +71,7 @@ public class StockClientClient extends WebSocketClient {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(timestamp);
                 CurrentStockValueResponse rs = new CurrentStockValueResponse(stockSymbol, lastPrice, timestamp);
-                logger.info(stockSymbol + " at price " + lastPrice + " at " + calendar.getTime());
+                logger.debug(stockSymbol + " at price " + lastPrice + " at " + calendar.getTime());
                 responseList.put(stockSymbol, rs);
                 cache.put(stockSymbol, rs);
             }
