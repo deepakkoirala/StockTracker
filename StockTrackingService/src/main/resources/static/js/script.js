@@ -1,18 +1,18 @@
 var app = angular.module("mainApp", []);
 app.controller("mainCtrl", function ($scope, $http, connection) {
   $scope.stockData = [
-    { symbol: "BITCOIN", altSymbol: "BINANCE:BTCUSDT", value: 0 },
-    { symbol: "AAPL", value: 0 },
-    { symbol: "TSLA", value: 123123 },
-    { symbol: "AIV", value: 123123 },
-    { symbol: "AMZN", value: 123123 },
-    { symbol: "AAL", value: 123123 },
-    { symbol: "IC MARKET", altSymbol: "IC MARKETS:1", value: 123123 },
-    { symbol: "PFE", value: 123123 },
-    { symbol: "AMZ", value: 123123 },
-    { symbol: "AMZ", value: 123123 },
-    { symbol: "AMZ", value: 123123 },
-    { symbol: "AMZ", value: 123123 }
+    // { symbol: "BITCOIN", altSymbol: "BINANCE:BTCUSDT", value: 0 },
+    // { symbol: "AAPL", value: 0 },
+    // { symbol: "TSLA", value: 123123 },
+    // { symbol: "AIV", value: 123123 },
+    // { symbol: "AMZN", value: 123123 },
+    // { symbol: "AAL", value: 123123 },
+    // { symbol: "IC MARKET", altSymbol: "IC MARKETS:1", value: 123123 },
+    // { symbol: "PFE", value: 123123 },
+    // { symbol: "AMZ", value: 123123 },
+    // { symbol: "AMZ", value: 123123 },
+    // { symbol: "AMZ", value: 123123 },
+    // { symbol: "AMZ", value: 123123 }
   ];
 
   let getTicket = function () {
@@ -24,16 +24,17 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
       });
   };
 
-  let findIndex = function(arr, symbol){
-    return arr.findIndex(d=>d.symbol == symbol || d.altSymbol == symbol)
-  }
+//   let findIndex = function(arr, symbol){
+//     return arr.findIndex(d=>d.symbol == symbol || d.altSymbol == symbol)
+//   }
 
   let connectWebSkt = function () {
 //    getTicket();
     connection.connect(function(data){
-        // console.log(data);
-        let ind = findIndex($scope.stockData, data.symbol);
-        $scope.stockData[ind].value = data.price;
+        console.log(data);
+        // let ind = findIndex($scope.stockData, data.symbol);
+        // $scope.stockData[ind].value = data.price;
+        $scope.stockData = data;
         $scope.$apply();
     });
   };

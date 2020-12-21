@@ -1,9 +1,10 @@
 body {
     background:#CAF0F8;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 .c_tik {
     border:1px solid #1d3557;
-    height:10rem;
+    height:11rem;
     text-align: center;
     margin-bottom:2rem;
     margin-top:5rem;
@@ -11,10 +12,16 @@ body {
     border-radius:2px;
     background:#a8dadc;
 }
+.title {
+    margin-top:2rem;
+}
 h2 {
     color:#03045e;
     font-weight: bold;
 }
 h3 {
     color:#023E8A;
+}
+.timestamp {
+    color:rgb(46, 14, 14);
 }
