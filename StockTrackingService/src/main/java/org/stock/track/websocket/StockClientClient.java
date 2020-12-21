@@ -27,6 +27,8 @@ public class StockClientClient extends WebSocketClient {
     @Value("#{'${defaultStocks}'.split(',')}")
     private List<String> defaultStockList;
 
+    private Map<String, CurrentStockValueResponse> cache = new HashMap<>();
+
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
@@ -58,7 +60,7 @@ public class StockClientClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         JSONObject response = new JSONObject(message);
-        Map<String, CurrentStockValueResponse> responseList = new LinkedHashMap<>();
+        Map<String, CurrentStockValueResponse> responseList = new TreeMap<>();
         if (response.has("data")) {
             JSONArray tradeList = response.getJSONArray("data");
             for (int i = 0; i < tradeList.length(); i++) {
@@ -71,12 +73,17 @@ public class StockClientClient extends WebSocketClient {
                 CurrentStockValueResponse rs = new CurrentStockValueResponse(stockSymbol, lastPrice, timestamp);
                 logger.info(stockSymbol + " at price " + lastPrice + " at " + calendar.getTime());
                 responseList.put(stockSymbol, rs);
+                cache.put(stockSymbol, rs);
             }
             for (String symbol : defaultStockList) {
                 if (!responseList.containsKey(symbol)) {
-                    CurrentStockValueResponse value = new CurrentStockValueResponse();
-                    value.setSymbol(symbol);
-                    responseList.put(symbol, value);
+                    if (cache.containsKey(symbol)) {
+                        responseList.put(symbol, cache.get(symbol));
+                    } else {
+                        CurrentStockValueResponse value = new CurrentStockValueResponse();
+                        value.setSymbol(symbol);
+                        responseList.put(symbol, value);
+                    }
                 }
             }
             simpMessagingTemplate.convertAndSend("/topic/updateService", responseList.values());
