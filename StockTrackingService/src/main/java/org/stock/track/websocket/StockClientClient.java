@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.stock.track.pojo.CurrentStockValueResponse;
@@ -20,6 +21,7 @@ import java.nio.ByteBuffer;
 import java.util.*;
 
 @Component
+@PropertySource("classpath:application.properties")
 public class StockClientClient extends WebSocketClient {
 
     private static final Log logger = LogFactory.getLog(StockClientClient.class);

@@ -5,11 +5,13 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 @Configuration
+@PropertySource("classpath:application.properties")
 public class Config {
     private static final Log logger = LogFactory.getLog(Config.class);
     @Value("${key}")
