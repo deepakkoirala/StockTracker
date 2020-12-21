@@ -38,6 +38,7 @@ app.service("connection", function () {
   function connect() {
     var socket = new SockJS("/ws");
     stompClient = Stomp.over(socket);
+    stompClient.debug = null;
     subscribe();
   }
 
@@ -53,7 +54,6 @@ app.service("connection", function () {
       console.log("Connected: " + frame);
       stompClient.subscribe("/topic/updateService", function (greeting) {
         console.log(JSON.parse(greeting["body"]));
-//        console.log(JSON.parse(greeting.body).content);
       });
     }, function(err){
         console.log("Error: ", err);
