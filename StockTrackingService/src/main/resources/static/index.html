@@ -20,7 +20,7 @@
           <div class="col-md-3" ng-repeat="x in stockData">
             <div class="c_tik">
                 <h2>{{x.symbol}}</h2>
-                <h3>{{x.price}}</h3>
+                <h3>${{x.price}}</h3>
                 <span class="timestamp" ng-if="x.timestamp">As of {{x.timestamp | date: "yyyy-MM-dd hh:mm:ssa"}}</span>
             </div>
           </div>
