@@ -6,6 +6,11 @@ Result of staying home due to Covid in short. Tracks stock for given symbol usin
 * Maven 
 * No Life :)
 
+## Build Process
+```
+mvn clean install spring-boot:repackage
+```
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
