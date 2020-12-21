@@ -1,14 +1,18 @@
 var app = angular.module("mainApp", []);
 app.controller("mainCtrl", function ($scope, $http, connection) {
   $scope.stockData = [
-    { symbol: "AAPL", value: 123123 },
+    { symbol: "BITCOIN", altSymbol: "BINANCE:BTCUSDT", value: 0 },
+    { symbol: "AAPL", value: 0 },
     { symbol: "TSLA", value: 123123 },
     { symbol: "AIV", value: 123123 },
-    { symbol: "ACB", value: 123123 },
+    { symbol: "AMZN", value: 123123 },
+    { symbol: "AAL", value: 123123 },
+    { symbol: "IC MARKET", altSymbol: "IC MARKETS:1", value: 123123 },
+    { symbol: "PFE", value: 123123 },
     { symbol: "AMZ", value: 123123 },
     { symbol: "AMZ", value: 123123 },
     { symbol: "AMZ", value: 123123 },
-    { symbol: "AMZ", value: 123123 },
+    { symbol: "AMZ", value: 123123 }
   ];
 
   let getTicket = function () {
@@ -20,9 +24,18 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
       });
   };
 
+  let findIndex = function(arr, symbol){
+    return arr.findIndex(d=>d.symbol == symbol || d.altSymbol == symbol)
+  }
+
   let connectWebSkt = function () {
 //    getTicket();
-    connection.connect();
+    connection.connect(function(data){
+        // console.log(data);
+        let ind = findIndex($scope.stockData, data.symbol);
+        $scope.stockData[ind].value = data.price;
+        $scope.$apply();
+    });
   };
 
   let init = function () {
@@ -35,11 +48,11 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
 app.service("connection", function () {
   var stompClient = null;
 
-  function connect() {
+  function connect(callback) {
     var socket = new SockJS("/ws");
     stompClient = Stomp.over(socket);
     stompClient.debug = null;
-    subscribe();
+    subscribe(callback);
   }
 
   function disconnect() {
@@ -49,11 +62,12 @@ app.service("connection", function () {
     console.log("Disconnected");
   }
 
-  function subscribe() {
+  function subscribe(callback) {
     stompClient.connect({}, function (frame) {
       console.log("Connected: " + frame);
-      stompClient.subscribe("/topic/updateService", function (greeting) {
-        console.log(JSON.parse(greeting["body"]));
+      stompClient.subscribe("/topic/updateService", function (data) {
+        // console.log(JSON.parse(data["body"]));
+        callback(JSON.parse(data["body"]));
       });
     }, function(err){
         console.log("Error: ", err);
