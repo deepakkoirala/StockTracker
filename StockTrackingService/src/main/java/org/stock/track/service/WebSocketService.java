@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.stock.track.config.Config;
 import org.stock.track.pojo.SubscribeResponse;
 import org.stock.track.websocket.StockClientClient;
 
@@ -20,11 +19,13 @@ public class WebSocketService {
 
     @PostConstruct
     private void connectSocket() {
-        if (!stockClientClient.isOpen())
+        if (!stockClientClient.isOpen()) {
             stockClientClient.connect();
+        }
     }
 
     public SubscribeResponse subscribe(String stockSymbol) {
+        logger.info("subscribing to " + stockSymbol);
         SubscribeResponse subscribeResponse = new SubscribeResponse();
         if (stockClientClient.isOpen()) {
             String bt = getSubscribeMessage(stockSymbol).toString();
@@ -38,6 +39,7 @@ public class WebSocketService {
     }
 
     public SubscribeResponse unsubscribe(String stockSymbol) {
+        logger.info("unsubscribing to " + stockSymbol);
         SubscribeResponse subscribeResponse = new SubscribeResponse();
         if (stockClientClient.isOpen()) {
             String bt = getUnSubscribeMessage(stockSymbol).toString();
@@ -46,11 +48,11 @@ public class WebSocketService {
             logger.info(stockSymbol + " unsubscribed");
             subscribeResponse.setSuccess(true);
         } else subscribeResponse.setSuccess(false);
-        
+
         return subscribeResponse;
     }
 
-    private JSONObject getSubscribeMessage(String symbol) {
+    public static JSONObject getSubscribeMessage(String symbol) {
         JSONObject obj = new JSONObject();
         obj.put("type", "subscribe");
         obj.put("symbol", symbol);
