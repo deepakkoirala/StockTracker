@@ -17,8 +17,7 @@ import org.stock.track.service.WebSocketService;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.nio.ByteBuffer;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class StockClientClient extends WebSocketClient {
@@ -59,6 +58,7 @@ public class StockClientClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         JSONObject response = new JSONObject(message);
+        Map<String, CurrentStockValueResponse> responseList = new LinkedHashMap<>();
         if (response.has("data")) {
             JSONArray tradeList = response.getJSONArray("data");
             for (int i = 0; i < tradeList.length(); i++) {
@@ -70,8 +70,16 @@ public class StockClientClient extends WebSocketClient {
                 calendar.setTimeInMillis(timestamp);
                 CurrentStockValueResponse rs = new CurrentStockValueResponse(stockSymbol, lastPrice, timestamp);
                 logger.info(stockSymbol + " at price " + lastPrice + " at " + calendar.getTime());
-                simpMessagingTemplate.convertAndSend("/topic/updateService", rs);
+                responseList.put(stockSymbol, rs);
             }
+            for (String symbol : defaultStockList) {
+                if (!responseList.containsKey(symbol)) {
+                    CurrentStockValueResponse value = new CurrentStockValueResponse();
+                    value.setSymbol(symbol);
+                    responseList.put(symbol, value);
+                }
+            }
+            simpMessagingTemplate.convertAndSend("/topic/updateService", responseList.values());
         }
     }
 
