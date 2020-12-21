@@ -10,13 +10,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
   <script src="js/script.js"></script>
 
   <body>
     <div class="container" ng-app="mainApp">
         <h1 class="title">Real Time Ticker</h1>
       <div class="row" ng-controller="mainCtrl">
-          <div class="col-3" ng-repeat="x in stockData">
+          <div class="col-md-3" ng-repeat="x in stockData">
             <div class="c_tik">
                 <h2>{{x.symbol}}</h2>
                 <h3>{{x.price}}</h3>

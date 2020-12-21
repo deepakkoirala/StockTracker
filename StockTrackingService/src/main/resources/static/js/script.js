@@ -1,4 +1,4 @@
-var app = angular.module("mainApp", []);
+var app = angular.module("mainApp", ['ngAnimate']);
 app.controller("mainCtrl", function ($scope, $http, connection) {
   $scope.stockData = [
     // { symbol: "BITCOIN", altSymbol: "BINANCE:BTCUSDT", value: 0 },
@@ -24,18 +24,18 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
       });
   };
 
-//   let findIndex = function(arr, symbol){
-//     return arr.findIndex(d=>d.symbol == symbol || d.altSymbol == symbol)
-//   }
+  //   let findIndex = function(arr, symbol){
+  //     return arr.findIndex(d=>d.symbol == symbol || d.altSymbol == symbol)
+  //   }
 
   let connectWebSkt = function () {
-//    getTicket();
-    connection.connect(function(data){
-        console.log(data);
-        // let ind = findIndex($scope.stockData, data.symbol);
-        // $scope.stockData[ind].value = data.price;
-        $scope.stockData = data;
-        $scope.$apply();
+    //    getTicket();
+    connection.connect(function (data) {
+      // console.log(data);
+      // let ind = findIndex($scope.stockData, data.symbol);
+      // $scope.stockData[ind].value = data.price;
+      $scope.stockData = data;
+      $scope.$apply();
     });
   };
 
@@ -64,15 +64,19 @@ app.service("connection", function () {
   }
 
   function subscribe(callback) {
-    stompClient.connect({}, function (frame) {
-      console.log("Connected: " + frame);
-      stompClient.subscribe("/topic/updateService", function (data) {
-        // console.log(JSON.parse(data["body"]));
-        callback(JSON.parse(data["body"]));
-      });
-    }, function(err){
+    stompClient.connect(
+      {},
+      function (frame) {
+        console.log("Connected: " + frame);
+        stompClient.subscribe("/topic/updateService", function (data) {
+          // console.log(JSON.parse(data["body"]));
+          callback(JSON.parse(data["body"]));
+        });
+      },
+      function (err) {
         console.log("Error: ", err);
-    });
+      }
+    );
   }
 
   function sendName() {

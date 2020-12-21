@@ -1,27 +1,37 @@
 body {
-    background:#CAF0F8;
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  background: #caf0f8;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
 }
 .c_tik {
-    border:1px solid #1d3557;
-    height:11rem;
-    text-align: center;
-    margin-bottom:2rem;
-    margin-top:5rem;
-    padding:2rem;
-    border-radius:2px;
-    background:#a8dadc;
+  border: 1px solid #1d3557;
+  height: 11rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  margin-top: 5rem;
+  padding: 2rem;
+  border-radius: 2px;
+  background: #a8dadc;
 }
 .title {
-    margin-top:2rem;
+  margin-top: 2rem;
 }
 h2 {
-    color:#03045e;
-    font-weight: bold;
+  color: #03045e;
+  font-weight: bold;
 }
 h3 {
-    color:#023E8A;
+  color: #023e8a;
 }
 .timestamp {
-    color:rgb(46, 14, 14);
+  color: rgb(46, 14, 14);
 }
+/* .c_tik {
+  transition: 1s;
+}
+.c_tik.ng-enter {
+  background: #b7cabb;
+}
+.c_tik.ng-enter.ng-enter-active {
+  background: #a8dadc;
+} */
