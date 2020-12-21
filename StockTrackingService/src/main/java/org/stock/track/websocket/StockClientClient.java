@@ -7,26 +7,48 @@ import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
+import org.stock.track.pojo.CurrentStockValueResponse;
+import org.stock.track.pojo.SubscribeResponse;
+import org.stock.track.service.WebSocketService;
 
 import java.math.BigDecimal;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.Calendar;
+import java.util.List;
 
 @Component
 public class StockClientClient extends WebSocketClient {
 
     private static final Log logger = LogFactory.getLog(StockClientClient.class);
 
+    @Value("#{'${defaultStocks}'.split(',')}")
+    private List<String> defaultStockList;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     @Autowired
     public StockClientClient(URI serverURI) {
         super(serverURI);
     }
 
+    private void subscribe(String stockSymbol) {
+        logger.info("subscribing to " + stockSymbol);
+        if (isOpen()) {
+            String bt = WebSocketService.getSubscribeMessage(stockSymbol).toString();
+            send(bt);
+            logger.info(stockSymbol + " subscribed");
+        }
+    }
+
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         logger.info("new connection opened");
+        defaultStockList.forEach(this::subscribe);
     }
 
     @Override
@@ -46,7 +68,9 @@ public class StockClientClient extends WebSocketClient {
                 long timestamp = stock.getLong("t");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(timestamp);
+                CurrentStockValueResponse rs = new CurrentStockValueResponse(stockSymbol, lastPrice, timestamp);
                 logger.info(stockSymbol + " at price " + lastPrice + " at " + calendar.getTime());
+                simpMessagingTemplate.convertAndSend("/topic/updateService", rs);
             }
         }
     }

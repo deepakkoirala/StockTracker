@@ -21,7 +21,7 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
   };
 
   let connectWebSkt = function () {
-    getTicket();
+//    getTicket();
     connection.connect();
   };
 
@@ -36,7 +36,7 @@ app.service("connection", function () {
   var stompClient = null;
 
   function connect() {
-    var socket = new SockJS("/gs-guide-websocket");
+    var socket = new SockJS("/ws");
     stompClient = Stomp.over(socket);
     subscribe();
   }
@@ -51,9 +51,9 @@ app.service("connection", function () {
   function subscribe() {
     stompClient.connect({}, function (frame) {
       console.log("Connected: " + frame);
-      stompClient.subscribe("/topic/greetings", function (greeting) {
-        console.log(greeting);
-        console.log(JSON.parse(greeting.body).content);
+      stompClient.subscribe("/topic/updateService", function (greeting) {
+        console.log(JSON.parse(greeting["body"]));
+//        console.log(JSON.parse(greeting.body).content);
       });
     }, function(err){
         console.log("Error: ", err);
