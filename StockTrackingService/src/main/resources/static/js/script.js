@@ -30,12 +30,20 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
 
   let connectWebSkt = function () {
     //    getTicket();
-    connection.connect(function (data) {
+    connection.connect(function (data, err) {
       // console.log(data);
       // let ind = findIndex($scope.stockData, data.symbol);
       // $scope.stockData[ind].value = data.price;
-      $scope.stockData = data;
-      $scope.$apply();
+      if(err) {
+        setTimeout(()=>{
+          console.log("Error, reconnecting...");
+          connectWebSkt();
+        },5000)
+      }
+      else {
+        $scope.stockData = data;
+        $scope.$apply();
+      }
     });
   };
 
@@ -64,6 +72,7 @@ app.service("connection", function () {
   }
 
   function subscribe(callback) {
+    console.log("Connecting...");
     stompClient.connect(
       {},
       function (frame) {
@@ -75,6 +84,7 @@ app.service("connection", function () {
       },
       function (err) {
         console.log("Error: ", err);
+        callback(null, "Error");
       }
     );
   }
