@@ -62,6 +62,12 @@ public class StockClientClient extends WebSocketClient {
     @Override
     public void onClose(int code, String reason, boolean remote) {
         logger.info("closed with exit code " + code + " additional info: " + reason);
+        try {
+            logger.info("Reconnecting in 5 Seconds.");
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (code != CloseFrame.NORMAL) {// reconnect only for abnormal closures
             new Thread(() -> reconnect()).start();
 //            setSocket(new Socket());
@@ -96,11 +102,11 @@ public class StockClientClient extends WebSocketClient {
                                 progress = CurrentProgress.INCREASING;
                                 break;
                             default:
-                                progress = CurrentProgress.SAME;
+                                progress = cache.get(stockSymbol).getCurrentProgress();
                         }
                     }
                 }
-                System.out.println("this is progress " + progress + " for " + stockSymbol);
+                // System.out.println("this is progress " + progress + " for " + stockSymbol);
                 CurrentStockValueResponse rs = new CurrentStockValueResponse(stockSymbol, lastPrice, timestamp, progress);
                 logger.debug(stockSymbol + " at price " + lastPrice + " at " + calendar.getTime());
                 responseMap.put(stockSymbol, rs);

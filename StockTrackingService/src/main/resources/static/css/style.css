@@ -23,6 +23,14 @@ h3 {
 .timestamp {
   color: rgb(46, 14, 14);
 }
+.DECREASING {
+  color:red;
+  font-weight: bold;
+}
+.INCREASING {
+  color:green;
+  font-weight: bold;
+}
 /* .c_tik {
   transition: 1s;
 }
