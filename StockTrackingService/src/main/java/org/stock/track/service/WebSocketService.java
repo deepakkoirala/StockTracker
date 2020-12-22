@@ -5,10 +5,12 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.stock.track.pojo.CurrentStockValueResponse;
 import org.stock.track.pojo.SubscribeResponse;
 import org.stock.track.websocket.StockClientClient;
 
 import javax.annotation.PostConstruct;
+import java.util.Collection;
 
 @Service
 public class WebSocketService {
@@ -33,6 +35,7 @@ public class WebSocketService {
             stockClientClient.send(bt);
             logger.info(stockSymbol + " subscribed");
             subscribeResponse.setSuccess(true);
+            stockClientClient.onSubscribe(stockSymbol);
         } else subscribeResponse.setSuccess(false);
 
         return subscribeResponse;
@@ -47,6 +50,7 @@ public class WebSocketService {
             stockClientClient.send(bt);
             logger.info(stockSymbol + " unsubscribed");
             subscribeResponse.setSuccess(true);
+            stockClientClient.onUnSubscribe(stockSymbol);
         } else subscribeResponse.setSuccess(false);
 
         return subscribeResponse;
@@ -64,5 +68,9 @@ public class WebSocketService {
         obj.put("type", "unsubscribe");
         obj.put("symbol", symbol);
         return obj;
+    }
+
+    public Collection<CurrentStockValueResponse> getAllSubscribedStocks() {
+        return stockClientClient.getAllSubscribedStocks();
     }
 }

@@ -12,7 +12,14 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CurrentStockValueResponse {
+
     private String symbol;
     private BigDecimal price;
     private long timestamp;
+    private CurrentProgress currentProgress;
+
+    public CurrentStockValueResponse(String symbol, CurrentProgress progress) {
+        this.symbol = symbol;
+        this.currentProgress = progress;
+    }
 }
