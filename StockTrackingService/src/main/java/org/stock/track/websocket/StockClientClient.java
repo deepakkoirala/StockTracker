@@ -3,6 +3,7 @@ package org.stock.track.websocket;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.framing.CloseFrame;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,17 +12,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.ApplicationScope;
+import org.stock.track.pojo.CurrentProgress;
 import org.stock.track.pojo.CurrentStockValueResponse;
-import org.stock.track.pojo.SubscribeResponse;
 import org.stock.track.service.WebSocketService;
 
 import java.math.BigDecimal;
+import java.net.Socket;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.*;
 
 @Component
 @PropertySource("classpath:application.properties")
+@ApplicationScope
 public class StockClientClient extends WebSocketClient {
 
     private static final Log logger = LogFactory.getLog(StockClientClient.class);
@@ -29,7 +33,7 @@ public class StockClientClient extends WebSocketClient {
     @Value("#{'${defaultStocks}'.split(',')}")
     private List<String> defaultStockList;
 
-    private Map<String, CurrentStockValueResponse> cache = new HashMap<>();
+    private final Map<String, CurrentStockValueResponse> cache = new TreeMap<>();
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -44,6 +48,7 @@ public class StockClientClient extends WebSocketClient {
         if (isOpen()) {
             String bt = WebSocketService.getSubscribeMessage(stockSymbol).toString();
             send(bt);
+            cache.put(stockSymbol, new CurrentStockValueResponse(stockSymbol, CurrentProgress.NEW));
             logger.info(stockSymbol + " subscribed");
         }
     }
@@ -57,12 +62,23 @@ public class StockClientClient extends WebSocketClient {
     @Override
     public void onClose(int code, String reason, boolean remote) {
         logger.info("closed with exit code " + code + " additional info: " + reason);
+        try {
+            logger.info("Reconnecting in 5 Seconds.");
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (code != CloseFrame.NORMAL) {// reconnect only for abnormal closures
+            new Thread(() -> reconnect()).start();
+//            setSocket(new Socket());
+//            reconnect();
+        }
     }
 
     @Override
     public void onMessage(String message) {
         JSONObject response = new JSONObject(message);
-        Map<String, CurrentStockValueResponse> responseList = new TreeMap<>();
+        Map<String, CurrentStockValueResponse> responseMap = new TreeMap<>();
         if (response.has("data")) {
             JSONArray tradeList = response.getJSONArray("data");
             for (int i = 0; i < tradeList.length(); i++) {
@@ -72,23 +88,37 @@ public class StockClientClient extends WebSocketClient {
                 long timestamp = stock.getLong("t");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(timestamp);
-                CurrentStockValueResponse rs = new CurrentStockValueResponse(stockSymbol, lastPrice, timestamp);
-                logger.debug(stockSymbol + " at price " + lastPrice + " at " + calendar.getTime());
-                responseList.put(stockSymbol, rs);
-                cache.put(stockSymbol, rs);
-            }
-            for (String symbol : defaultStockList) {
-                if (!responseList.containsKey(symbol)) {
-                    if (cache.containsKey(symbol)) {
-                        responseList.put(symbol, cache.get(symbol));
+                CurrentProgress progress = null;
+                if (cache.containsKey(stockSymbol)) {
+                    BigDecimal previousPrice = cache.get(stockSymbol).getPrice();
+                    if (previousPrice == null) {
+                        progress = CurrentProgress.NEW;
                     } else {
-                        CurrentStockValueResponse value = new CurrentStockValueResponse();
-                        value.setSymbol(symbol);
-                        responseList.put(symbol, value);
+                        switch (previousPrice.compareTo(lastPrice)) {
+                            case 1:
+                                progress = CurrentProgress.DECREASING;
+                                break;
+                            case -1:
+                                progress = CurrentProgress.INCREASING;
+                                break;
+                            default:
+                                progress = cache.get(stockSymbol).getCurrentProgress();
+                        }
                     }
                 }
+                // System.out.println("this is progress " + progress + " for " + stockSymbol);
+                CurrentStockValueResponse rs = new CurrentStockValueResponse(stockSymbol, lastPrice, timestamp, progress);
+                logger.debug(stockSymbol + " at price " + lastPrice + " at " + calendar.getTime());
+                responseMap.put(stockSymbol, rs);
+                cache.put(stockSymbol, rs);
             }
-            simpMessagingTemplate.convertAndSend("/topic/updateService", responseList.values());
+            for (Map.Entry<String, CurrentStockValueResponse> entry : cache.entrySet()) {
+                String symbol = entry.getKey();
+                if (!responseMap.containsKey(symbol)) {
+                    responseMap.put(symbol, entry.getValue());
+                }
+            }
+            simpMessagingTemplate.convertAndSend("/topic/updateService", responseMap.values());
         }
     }
 
@@ -100,5 +130,17 @@ public class StockClientClient extends WebSocketClient {
     @Override
     public void onError(Exception ex) {
         logger.error("an error occurred:" + ex);
+    }
+
+    public void onSubscribe(String stockSymbol) {
+        cache.put(stockSymbol, new CurrentStockValueResponse(stockSymbol, CurrentProgress.NEW));
+    }
+
+    public void onUnSubscribe(String stockSymbol) {
+        cache.remove(stockSymbol);
+    }
+
+    public Collection<CurrentStockValueResponse> getAllSubscribedStocks() {
+        return cache.values();
     }
 }

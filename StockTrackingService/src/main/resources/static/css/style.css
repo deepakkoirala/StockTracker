@@ -23,6 +23,19 @@ h3 {
 .timestamp {
   color: rgb(46, 14, 14);
 }
+.ovflow {
+  overflow: hidden; /* make sure it hides the content that overflows */
+  white-space: nowrap; /* don't break the line */
+  text-overflow: ellipsis; /* give the beautiful '...' effect */
+}
+.DECREASING {
+  color:red;
+  font-weight: bold;
+}
+.INCREASING {
+  color:green;
+  font-weight: bold;
+}
 /* .c_tik {
   transition: 1s;
 }

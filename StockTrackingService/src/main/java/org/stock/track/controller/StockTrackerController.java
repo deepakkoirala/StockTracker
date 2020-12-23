@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.stock.track.pojo.CurrentStockValueResponse;
 import org.stock.track.pojo.SubscribeResponse;
 import org.stock.track.service.WebSocketService;
+
+import java.util.Collection;
 
 @RestController
 public class StockTrackerController {
@@ -29,5 +32,11 @@ public class StockTrackerController {
     public SubscribeResponse unsubscribe(@PathVariable(value = "stockSymbol") String stockSymbol) {
         logger.info("unsubscribing to symbol " + stockSymbol);
         return webSocketService.unsubscribe(stockSymbol);
+    }
+
+    @RequestMapping("/stock-track/getAllSubscribedStocks")
+    @ResponseBody
+    public Collection<CurrentStockValueResponse> getAllSubscribedStocks() {
+        return webSocketService.getAllSubscribedStocks();
     }
 }
