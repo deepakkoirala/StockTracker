@@ -1,19 +1,29 @@
-var app = angular.module("mainApp", ['ngAnimate']);
+var app = angular.module("mainApp", ["ngAnimate"]);
 app.controller("mainCtrl", function ($scope, $http, connection) {
-  $scope.stockData = [
-    // { symbol: "BITCOIN", altSymbol: "BINANCE:BTCUSDT", value: 0 },
-    // { symbol: "AAPL", value: 0 },
-    // { symbol: "TSLA", value: 123123 },
-    // { symbol: "AIV", value: 123123 },
-    // { symbol: "AMZN", value: 123123 },
-    // { symbol: "AAL", value: 123123 },
-    // { symbol: "IC MARKET", altSymbol: "IC MARKETS:1", value: 123123 },
-    // { symbol: "PFE", value: 123123 },
-    // { symbol: "AMZ", value: 123123 },
-    // { symbol: "AMZ", value: 123123 },
-    // { symbol: "AMZ", value: 123123 },
-    // { symbol: "AMZ", value: 123123 }
-  ];
+  $scope.stockData = [];
+
+  $scope.getDarkClass = function () {
+    let hour = new Date().getHours();
+    // hour = 20
+    return hour >= 20 || hour <= 7 ? "dark" : "";
+  };
+
+  let setDataScope = function (data) {
+    $scope.stockData = data;
+    $scope.$apply();
+  };
+
+  let currSecTime = 0;
+  let setData = function (data) {
+    if (bowser.parse(window.navigator.userAgent).platform.type == "mobile") {
+      if (currSecTime != new Date().getSeconds()) {
+        setDataScope(data);
+        currSecTime = new Date().getSeconds();
+      }
+    } else {
+      setDataScope(data);
+    }
+  };
 
   let getTicket = function () {
     $http
@@ -23,26 +33,15 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
         console.log(data);
       });
   };
-
-  //   let findIndex = function(arr, symbol){
-  //     return arr.findIndex(d=>d.symbol == symbol || d.altSymbol == symbol)
-  //   }
-
   let connectWebSkt = function () {
-    //    getTicket();
     connection.connect(function (data, err) {
-      // console.log(data);
-      // let ind = findIndex($scope.stockData, data.symbol);
-      // $scope.stockData[ind].value = data.price;
-      if(err) {
-        setTimeout(()=>{
+      if (err) {
+        setTimeout(() => {
           console.log("Error, reconnecting in 5 Seconds...");
           connectWebSkt();
-        },5000)
-      }
-      else {
-        $scope.stockData = data;
-        $scope.$apply();
+        }, 5000);
+      } else {
+        setData(data);
       }
     });
   };

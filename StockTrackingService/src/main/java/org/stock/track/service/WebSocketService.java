@@ -27,8 +27,15 @@ public class WebSocketService {
     }
 
     public SubscribeResponse subscribe(String stockSymbol) {
-        logger.info("subscribing to " + stockSymbol);
         SubscribeResponse subscribeResponse = new SubscribeResponse();
+        if (stockSymbol == null) {
+            subscribeResponse.setSuccess(false);
+            return subscribeResponse;
+        }
+        stockSymbol = stockSymbol.toUpperCase();
+
+        logger.info("subscribing to " + stockSymbol);
+
         if (stockClientClient.isOpen()) {
             String bt = getSubscribeMessage(stockSymbol).toString();
             System.out.println(bt);
@@ -44,6 +51,11 @@ public class WebSocketService {
     public SubscribeResponse unsubscribe(String stockSymbol) {
         logger.info("unsubscribing to " + stockSymbol);
         SubscribeResponse subscribeResponse = new SubscribeResponse();
+        if (stockSymbol == null) {
+            subscribeResponse.setSuccess(false);
+            return subscribeResponse;
+        }
+        stockSymbol = stockSymbol.toUpperCase();
         if (stockClientClient.isOpen()) {
             String bt = getUnSubscribeMessage(stockSymbol).toString();
             System.out.println(bt);
