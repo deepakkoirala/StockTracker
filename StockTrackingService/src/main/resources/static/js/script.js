@@ -16,8 +16,9 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
   };
 
   var currSecTime = 0;
+  var device = bowser.parse(window.navigator.userAgent).platform.type;
   var setData = function (data) {
-    if (bowser.parse(window.navigator.userAgent).platform.type == "mobile") {
+    if ( device == "mobile") {
       if (currSecTime != new Date().getSeconds()) {
         setDataScope(data);
         currSecTime = new Date().getSeconds();
@@ -38,7 +39,7 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
   var connectWebSkt = function () {
     connection.connect(function (data, err) {
       if (err) {
-        setTimeout(function(){
+        setTimeout(function () {
           console.log("Error, reconnecting in 5 Seconds...");
           connectWebSkt();
         }, 5000);
