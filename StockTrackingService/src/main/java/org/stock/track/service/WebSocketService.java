@@ -68,6 +68,7 @@ public class WebSocketService {
         return subscribeResponse;
     }
 
+
     public static JSONObject getSubscribeMessage(String symbol) {
         JSONObject obj = new JSONObject();
         obj.put("type", "subscribe");
@@ -75,7 +76,7 @@ public class WebSocketService {
         return obj;
     }
 
-    private JSONObject getUnSubscribeMessage(String symbol) {
+    public static JSONObject getUnSubscribeMessage(String symbol) {
         JSONObject obj = new JSONObject();
         obj.put("type", "unsubscribe");
         obj.put("symbol", symbol);
@@ -84,5 +85,9 @@ public class WebSocketService {
 
     public Collection<CurrentStockValueResponse> getAllSubscribedStocks() {
         return stockClientClient.getAllSubscribedStocks();
+    }
+
+    public SubscribeResponse unsubscribeAll() {
+        return stockClientClient.unsubscribeAll();
     }
 }
