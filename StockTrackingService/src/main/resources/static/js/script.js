@@ -1,21 +1,24 @@
 var app = angular.module("mainApp", ["ngAnimate"]);
 app.controller("mainCtrl", function ($scope, $http, connection) {
-  $scope.stockData = [];
+  $scope.stockData = [
+    // {symbol: "aapl"}
+  ];
 
   $scope.getDarkClass = function () {
-    let hour = new Date().getHours();
+    var hour = new Date().getHours();
     // hour = 20
     return hour >= 20 || hour <= 7 ? "dark" : "";
   };
 
-  let setDataScope = function (data) {
+  var setDataScope = function (data) {
     $scope.stockData = data;
     $scope.$apply();
   };
 
-  let currSecTime = 0;
-  let setData = function (data) {
-    if (bowser.parse(window.navigator.userAgent).platform.type == "mobile") {
+  var currSecTime = 0;
+  var device = bowser.parse(window.navigator.userAgent).platform.type;
+  var setData = function (data) {
+    if ( device == "mobile") {
       if (currSecTime != new Date().getSeconds()) {
         setDataScope(data);
         currSecTime = new Date().getSeconds();
@@ -25,18 +28,18 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
     }
   };
 
-  let getTicket = function () {
+  var getTicket = function () {
     $http
       .get("/stock-track/unsubscribe/BINANCE:BTCUSDT")
       .then(function (response) {
-        let data = response.data;
+        var data = response.data;
         console.log(data);
       });
   };
-  let connectWebSkt = function () {
+  var connectWebSkt = function () {
     connection.connect(function (data, err) {
       if (err) {
-        setTimeout(() => {
+        setTimeout(function () {
           console.log("Error, reconnecting in 5 Seconds...");
           connectWebSkt();
         }, 5000);
@@ -46,7 +49,7 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
     });
   };
 
-  let init = function () {
+  var init = function () {
     connectWebSkt();
   };
 
@@ -93,8 +96,8 @@ app.service("connection", function () {
   }
 
   return {
-    connect,
-    disconnect,
-    sendName,
+    connect: connect,
+    disconnect: disconnect,
+    sendName: sendName,
   };
 });

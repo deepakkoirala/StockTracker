@@ -39,4 +39,10 @@ public class StockTrackerController {
     public Collection<CurrentStockValueResponse> getAllSubscribedStocks() {
         return webSocketService.getAllSubscribedStocks();
     }
+
+    @RequestMapping("/stock-track/unsubscribeAll")
+    @ResponseBody
+    public SubscribeResponse unsubscribeAll() {
+        return webSocketService.unsubscribeAll();
+    }
 }
