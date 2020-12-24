@@ -128,7 +128,7 @@ public class StockClientClient extends WebSocketClient {
 
     @Override
     public void onMessage(ByteBuffer message) {
-        System.out.println("received ByteBuffer");
+        logger.debug("received ByteBuffer");
     }
 
     @Override
@@ -169,10 +169,10 @@ public class StockClientClient extends WebSocketClient {
     }
 
     private void unsubscribe(String stockSymbol) {
-        logger.info("unsubscribing to " + stockSymbol);
+        logger.debug("unsubscribing to " + stockSymbol);
         String bt = WebSocketService.getUnSubscribeMessage(stockSymbol).toString();
         send(bt);
         cache.remove(stockSymbol);
-        logger.info(stockSymbol + " unsubscribed");
+        logger.debug(stockSymbol + " unsubscribed");
     }
 }
