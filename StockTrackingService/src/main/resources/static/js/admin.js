@@ -5,6 +5,10 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
 
   $scope.inputSymbol = '';
 
+  var cleanInputSym = function(){
+    $scope.inputSymbol = '';
+  }
+
   $scope.getDarkClass = function () {
     return utils.isDark();
   };
@@ -35,6 +39,7 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
     connection.subscribeSymbol(symbol).then(function (r) {
       // console.log(r);
       refetchSymbols();
+      cleanInputSym();
     });
   };
 
