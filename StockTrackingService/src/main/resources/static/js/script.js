@@ -1,13 +1,24 @@
 var app = angular.module("mainApp", ["ngAnimate"]);
-app.controller("mainCtrl", function ($scope, $http, connection) {
+
+app.service("utils", function () {
+  var isDark = function () {
+    var hour = new Date().getHours();
+    // hour = 20
+    return hour >= 20 || hour <= 7 ? "dark" : "";
+  };
+
+  return {
+    isDark: isDark,
+  };
+});
+
+app.controller("mainCtrl", function ($scope, $http, connection, utils) {
   $scope.stockData = [
     // {symbol: "aapl"}
   ];
 
   $scope.getDarkClass = function () {
-    var hour = new Date().getHours();
-    // hour = 20
-    return hour >= 20 || hour <= 7 ? "dark" : "";
+    return utils.isDark();
   };
 
   var setDataScope = function (data) {
@@ -18,7 +29,7 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
   var currSecTime = 0;
   var device = bowser.parse(window.navigator.userAgent).platform.type;
   var setData = function (data) {
-    if ( device == "mobile") {
+    if (device == "mobile") {
       if (currSecTime != new Date().getSeconds()) {
         setDataScope(data);
         currSecTime = new Date().getSeconds();
@@ -54,50 +65,4 @@ app.controller("mainCtrl", function ($scope, $http, connection) {
   };
 
   init();
-});
-
-app.service("connection", function () {
-  var stompClient = null;
-
-  function connect(callback) {
-    var socket = new SockJS("/ws");
-    stompClient = Stomp.over(socket);
-    stompClient.debug = null;
-    subscribe(callback);
-  }
-
-  function disconnect() {
-    if (stompClient !== null) {
-      stompClient.disconnect();
-    }
-    console.log("Disconnected");
-  }
-
-  function subscribe(callback) {
-    console.log("Connecting...");
-    stompClient.connect(
-      {},
-      function (frame) {
-        console.log("Connected: " + frame);
-        stompClient.subscribe("/topic/updateService", function (data) {
-          // console.log(JSON.parse(data["body"]));
-          callback(JSON.parse(data["body"]));
-        });
-      },
-      function (err) {
-        console.log("Error: ", err);
-        callback(null, "Error");
-      }
-    );
-  }
-
-  function sendName() {
-    stompClient.send("/app/hello", {}, JSON.stringify({ name: "test" }));
-  }
-
-  return {
-    connect: connect,
-    disconnect: disconnect,
-    sendName: sendName,
-  };
 });
