@@ -52,6 +52,17 @@ h3 {
 .dark .timestamp {
   color: #aaa;
 }
+.close {
+  font-size:1.2rem;
+  color:red;
+  font-weight: bold;
+  opacity: 1;
+}
+.closeIcon {
+  position: absolute;
+  right: 8%;
+  top: 20%;
+}
 /* .c_tik {
   transition: 1s;
 }

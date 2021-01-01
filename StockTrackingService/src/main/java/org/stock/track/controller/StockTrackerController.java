@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.stock.track.pojo.CurrentStockValueResponse;
@@ -13,12 +14,22 @@ import org.stock.track.service.WebSocketService;
 
 import java.util.Collection;
 
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 public class StockTrackerController {
     private static final Log logger = LogFactory.getLog(StockTrackerController.class);
 
     @Autowired
     WebSocketService webSocketService;
+
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
+    public String redirect(ServletResponse response) {
+        ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+        ((HttpServletResponse) response).setHeader("Location", "/admin/index.html");
+        return null;
+    }
 
     @RequestMapping("/stock-track/subscribe/{stockSymbol}")
     @ResponseBody
