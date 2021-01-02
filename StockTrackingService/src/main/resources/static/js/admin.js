@@ -9,10 +9,6 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
     $scope.inputSymbol = '';
   }
 
-  $scope.getDarkClass = function () {
-    return utils.isDark();
-  };
-
   var setDataScope = function (data) {
     $scope.stockData = data;
   };
