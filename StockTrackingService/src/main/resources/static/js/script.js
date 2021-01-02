@@ -12,9 +12,14 @@ app.service("utils", function () {
   };
 });
 
-angular.element(document).ready(function() {
-  if(isDark())
-    document.querySelector("body").classList.add("dark");
+angular.element(document).ready(function () {
+  var checkDark = function () {
+    if (isDark()) document.querySelector("body").classList.add("dark");
+    else document.querySelector("body").classList.remove("dark");
+  };
+
+  checkDark();
+  setInterval(checkDark, 60000);
 });
 
 app.controller("mainCtrl", function ($scope, $http, connection, utils) {
