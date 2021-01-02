@@ -20,10 +20,6 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
     });
   };
 
-  var refetchSymbols = function(){
-    setTimeout(showAllSymbols, 1000);
-  }
-
   $scope.unSubscribeAll = function () {
     connection.unSubscribeAll().then(function (r) {
       // console.log(r);
@@ -34,7 +30,7 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
   $scope.subscribeSymbol = function (symbol) {
     connection.subscribeSymbol(symbol).then(function (r) {
       // console.log(r);
-      refetchSymbols();
+      showAllSymbols();
       cleanInputSym();
     });
   };
