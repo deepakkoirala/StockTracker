@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -60,9 +61,17 @@ public class StockTrackerController {
         return webSocketService.unsubscribeAll();
     }
 
+    /***
+     * Not used
+     */
     @MessageMapping("/getAllSubscribedStocks")
     @SendTo("/topic/updateService")
-    public Collection<CurrentStockValueResponse> broadcastNews(@Payload String message) {
+    public Collection<CurrentStockValueResponse> getAllSubscribedStocks(@Payload String message) {
+        return webSocketService.getAllSubscribedStocks();
+    }
+
+    @SubscribeMapping("/updateService")
+    public Collection<CurrentStockValueResponse> sendAllSubscribedStocks() {
         return webSocketService.getAllSubscribedStocks();
     }
 }

@@ -26,7 +26,7 @@ app.service("connection", function ($http) {
           // console.log(JSON.parse(data["body"]));
           callback(JSON.parse(data["body"]));
         });
-        wsGetAllSymbols();
+        // wsGetAllSymbols();
       },
       function (err) {
         console.log("Error: ", err);
@@ -36,7 +36,7 @@ app.service("connection", function ($http) {
   }
 
   function wsGetAllSymbols() {
-    stompClient.send("/topics/getAllSubscribedStocks", {}, JSON.stringify({ name: "test" }));
+    stompClient.send("/topic/getAllSubscribedStocks", {}, JSON.stringify({ name: "test" }));
   }
 
   function getAllSymbols() {
