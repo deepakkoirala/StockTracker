@@ -3,6 +3,9 @@ package org.stock.track.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -55,5 +58,11 @@ public class StockTrackerController {
     @ResponseBody
     public SubscribeResponse unsubscribeAll() {
         return webSocketService.unsubscribeAll();
+    }
+
+    @MessageMapping("/getAllSubscribedStocks")
+    @SendTo("/topic/updateService")
+    public Collection<CurrentStockValueResponse> broadcastNews(@Payload String message) {
+        return webSocketService.getAllSubscribedStocks();
     }
 }
