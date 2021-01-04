@@ -19,6 +19,8 @@ public class WebSocketService {
     @Autowired
     private StockClientClient stockClientClient;
 
+    private JSONObject settings;
+
     @PostConstruct
     private void connectSocket() {
         if (!stockClientClient.isOpen()) {
@@ -99,6 +101,11 @@ public class WebSocketService {
     }
 
     public SubscribeResponse propagateSetting(JSONObject settings) {
+        this.settings = settings;
         return stockClientClient.propagateSetting(settings);
+    }
+
+    public JSONObject getSettings() {
+        return this.settings;
     }
 }

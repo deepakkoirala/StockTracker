@@ -83,4 +83,10 @@ public class StockTrackerController {
     public SubscribeResponse setSetting(@RequestBody JSONObject setting) {
         return webSocketService.propagateSetting(setting);
     }
+
+    @RequestMapping("/stock-track/getSettings")
+    @ResponseBody
+    public JSONObject getSettings() {
+        return webSocketService.getSettings();
+    }
 }
