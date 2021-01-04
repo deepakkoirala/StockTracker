@@ -183,7 +183,7 @@ public class StockClientClient extends WebSocketClient {
     public SubscribeResponse propagateSetting(Map<String,Object> settings) {
         SubscribeResponse subscribeResponse = new SubscribeResponse();
         try {
-            simpMessagingTemplate.convertAndSend("/topic/updateSetting", settings);
+            simpMessagingTemplate.convertAndSend("/topic/getSettings", settings);
             subscribeResponse.setSuccess(true);
         } catch (MessagingException e) {
             subscribeResponse.setSuccess(false);

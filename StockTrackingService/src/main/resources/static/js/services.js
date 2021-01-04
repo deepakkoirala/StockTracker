@@ -11,7 +11,20 @@ app.service("connection", function ($http, $q) {
     var socket = new SockJS("/ws");
     stompClient = Stomp.over(socket);
     stompClient.debug = null;
-    subscribeStock(callback);
+    // subscribeStock(callback);
+    console.log("Connecting...");
+    stompClient.connect(
+      {},
+      function (frame) {
+        console.log("Connected: " + frame);
+        // wsGetAllSymbols();
+        callback("Connected");
+      },
+      function (err) {
+        console.log("Error: ", err);
+        callback(null, "Error");
+      }
+    );
   }
 
   function disconnect() {
@@ -22,22 +35,17 @@ app.service("connection", function ($http, $q) {
   }
 
   function subscribeStock(callback) {
-    console.log("Connecting...");
-    stompClient.connect(
-      {},
-      function (frame) {
-        console.log("Connected: " + frame);
-        stompClient.subscribe("/topic/updateService", function (data) {
-          // console.log(JSON.parse(data["body"]));
-          callback(JSON.parse(data["body"]));
-        });
-        // wsGetAllSymbols();
-      },
-      function (err) {
-        console.log("Error: ", err);
-        callback(null, "Error");
-      }
-    );
+    stompClient.subscribe("/topic/updateService", function (data) {
+      // console.log(JSON.parse(data["body"]));
+      callback(JSON.parse(data["body"]));
+    });
+  }
+
+  function subscribeSettings(callback) {
+    stompClient.subscribe("/topic/getSettings", function (data) {
+      // console.log(JSON.parse(data["body"]));
+      callback(JSON.parse(data["body"]));
+    });
   }
 
   function wsGetAllSymbols() {
@@ -94,20 +102,26 @@ app.service("connection", function ($http, $q) {
   function getDarkMode() {
     getSettings().then(function (r) {
       // console.log(r);
-      if (r.data && r.data.darkMode && r.data.darkMode == true) {
-        addDarkMode();
-        settings.darkMode = true;
-      }
-      else {
-        settings.darkMode = false;
-        removeDarkMode();
-      }
+      addRemoveDarkMode(r.data);
     });
+  }
+
+  function addRemoveDarkMode(r){
+    if (r && r.darkMode && r.darkMode == true) {
+      addDarkMode();
+      settings.darkMode = true;
+    }
+    else {
+      settings.darkMode = false;
+      removeDarkMode();
+    }
   }
 
   return {
     connect: connect,
     disconnect: disconnect,
+    subscribeStock: subscribeStock,
+    subscribeSettings: subscribeSettings,
     wsGetAllSymbols: wsGetAllSymbols,
     getAllSymbols: getAllSymbols,
     unSubscribeAll: unSubscribeAll,
@@ -118,5 +132,6 @@ app.service("connection", function ($http, $q) {
     setSettings: setSettings,
     toggleDarkMode: toggleDarkMode,
     getDarkMode: getDarkMode,
+    addRemoveDarkMode: addRemoveDarkMode
   };
 });

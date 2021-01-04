@@ -91,7 +91,7 @@ public class StockTrackerController {
         return webSocketService.getSettings();
     }
 
-    @SubscribeMapping("/stock-track/getSettings")
+    @SubscribeMapping("/getSettings")
     @ResponseBody
     public Map<String,Object> getSocketSettings() {
         return webSocketService.getSettings();

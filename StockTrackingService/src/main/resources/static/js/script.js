@@ -6,13 +6,13 @@ var isDark = function () {
   return hour >= 20 || hour <= 7 ? "dark" : "";
 };
 
-var addDarkMode = function(){
+var addDarkMode = function () {
   document.querySelector("body").classList.add("dark");
-}
+};
 
-var removeDarkMode = function(){
+var removeDarkMode = function () {
   document.querySelector("body").classList.remove("dark");
-}
+};
 
 app.service("utils", function () {
   return {
@@ -61,7 +61,14 @@ app.controller("mainCtrl", function ($scope, $http, connection, utils) {
           connectWebSkt();
         }, 5000);
       } else {
-        setData(data);
+        connection.subscribeStock(function (data) {
+          setData(data);
+        });
+
+        connection.subscribeSettings(function (data) {
+          console.log(data);
+          connection.addRemoveDarkMode(data);
+        });
       }
     });
   };
