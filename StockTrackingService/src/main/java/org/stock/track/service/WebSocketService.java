@@ -90,4 +90,15 @@ public class WebSocketService {
     public SubscribeResponse unsubscribeAll() {
         return stockClientClient.unsubscribeAll();
     }
+
+    public SubscribeResponse reset() {
+        SubscribeResponse subscribeResponse = stockClientClient.unsubscribeAll();
+        if (subscribeResponse.getSuccess())
+            stockClientClient.subscribeToAllDefaultList();
+        return subscribeResponse;
+    }
+
+    public SubscribeResponse propagateSetting(JSONObject settings) {
+        return stockClientClient.propagateSetting(settings);
+    }
 }
