@@ -14,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CurrentStockValueResponse {
-    private final static SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
+    private final static SimpleDateFormat FORMAT = new SimpleDateFormat("MM-dd hh:mm:ssaaa");
     private String symbol;
     private BigDecimal price;
     private long timestamp;
@@ -25,7 +25,7 @@ public class CurrentStockValueResponse {
         this.currentProgress = progress;
     }
 
-    public String getDateOfStock() {
+    public String getTimeString() {
         return FORMAT.format(new Date(timestamp));
     }
 }
