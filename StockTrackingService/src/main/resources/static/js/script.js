@@ -1,25 +1,39 @@
 var app = angular.module("mainApp", ["ngAnimate"]);
 
-app.service("utils", function () {
-  var isDark = function () {
-    var hour = new Date().getHours();
-    // hour = 20
-    return hour >= 20 || hour <= 7 ? "dark" : "";
-  };
+var isDark = function () {
+  var hour = new Date().getHours();
+  // hour = 20
+  return hour >= 20 || hour <= 7 ? "dark" : "";
+};
 
+var addDarkMode = function () {
+  document.querySelector("body").classList.add("dark");
+};
+
+var removeDarkMode = function () {
+  document.querySelector("body").classList.remove("dark");
+};
+
+app.service("utils", function () {
   return {
     isDark: isDark,
   };
+});
+
+angular.element(document).ready(function () {
+  var checkDark = function () {
+    if (isDark()) addDarkMode();
+    else removeDarkMode();
+  };
+
+  checkDark();
+  setInterval(checkDark, 60000);
 });
 
 app.controller("mainCtrl", function ($scope, $http, connection, utils) {
   $scope.stockData = [
     // {symbol: "aapl"}
   ];
-
-  $scope.getDarkClass = function () {
-    return utils.isDark();
-  };
 
   var setDataScope = function (data) {
     $scope.stockData = data;
@@ -39,14 +53,6 @@ app.controller("mainCtrl", function ($scope, $http, connection, utils) {
     }
   };
 
-  var getTicket = function () {
-    $http
-      .get("/stock-track/unsubscribe/BINANCE:BTCUSDT")
-      .then(function (response) {
-        var data = response.data;
-        console.log(data);
-      });
-  };
   var connectWebSkt = function () {
     connection.connect(function (data, err) {
       if (err) {
@@ -55,7 +61,14 @@ app.controller("mainCtrl", function ($scope, $http, connection, utils) {
           connectWebSkt();
         }, 5000);
       } else {
-        setData(data);
+        connection.subscribeStock(function (data) {
+          setData(data);
+        });
+
+        connection.subscribeSettings(function (data) {
+          console.log(data);
+          connection.addRemoveDarkMode(data);
+        });
       }
     });
   };

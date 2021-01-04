@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.ApplicationScope;
@@ -19,7 +20,6 @@ import org.stock.track.pojo.SubscribeResponse;
 import org.stock.track.service.WebSocketService;
 
 import java.math.BigDecimal;
-import java.net.Socket;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -57,6 +57,10 @@ public class StockClientClient extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         logger.info("new connection opened");
+        subscribeToAllDefaultList();
+    }
+
+    public void subscribeToAllDefaultList() {
         defaultStockList.forEach(this::subscribe);
     }
 
@@ -174,5 +178,16 @@ public class StockClientClient extends WebSocketClient {
         send(bt);
         cache.remove(stockSymbol);
         logger.debug(stockSymbol + " unsubscribed");
+    }
+
+    public SubscribeResponse propagateSetting(Map<String,Object> settings) {
+        SubscribeResponse subscribeResponse = new SubscribeResponse();
+        try {
+            simpMessagingTemplate.convertAndSend("/topic/getSettings", settings);
+            subscribeResponse.setSuccess(true);
+        } catch (MessagingException e) {
+            subscribeResponse.setSuccess(false);
+        }
+        return subscribeResponse;
     }
 }

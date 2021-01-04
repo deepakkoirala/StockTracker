@@ -1,12 +1,30 @@
-app.service("connection", function ($http) {
+app.service("connection", function ($http, $q) {
   var stompClient = null;
+
+  settings = {
+    darkMode: false,
+  };
+
   var baseUrl = "/stock-track";
 
   function connect(callback) {
     var socket = new SockJS("/ws");
     stompClient = Stomp.over(socket);
     stompClient.debug = null;
-    subscribe(callback);
+    // subscribeStock(callback);
+    console.log("Connecting...");
+    stompClient.connect(
+      {},
+      function (frame) {
+        console.log("Connected: " + frame);
+        // wsGetAllSymbols();
+        callback("Connected");
+      },
+      function (err) {
+        console.log("Error: ", err);
+        callback(null, "Error");
+      }
+    );
   }
 
   function disconnect() {
@@ -16,27 +34,26 @@ app.service("connection", function ($http) {
     console.log("Disconnected");
   }
 
-  function subscribe(callback) {
-    console.log("Connecting...");
-    stompClient.connect(
-      {},
-      function (frame) {
-        console.log("Connected: " + frame);
-        stompClient.subscribe("/topic/updateService", function (data) {
-          // console.log(JSON.parse(data["body"]));
-          callback(JSON.parse(data["body"]));
-        });
-        // wsGetAllSymbols();
-      },
-      function (err) {
-        console.log("Error: ", err);
-        callback(null, "Error");
-      }
-    );
+  function subscribeStock(callback) {
+    stompClient.subscribe("/topic/updateService", function (data) {
+      // console.log(JSON.parse(data["body"]));
+      callback(JSON.parse(data["body"]));
+    });
+  }
+
+  function subscribeSettings(callback) {
+    stompClient.subscribe("/topic/getSettings", function (data) {
+      // console.log(JSON.parse(data["body"]));
+      callback(JSON.parse(data["body"]));
+    });
   }
 
   function wsGetAllSymbols() {
-    stompClient.send("/topic/getAllSubscribedStocks", {}, JSON.stringify({ name: "test" }));
+    stompClient.send(
+      "/topic/getAllSubscribedStocks",
+      {},
+      JSON.stringify({ name: "test" })
+    );
   }
 
   function getAllSymbols() {
@@ -55,13 +72,66 @@ app.service("connection", function ($http) {
     return $http.get(baseUrl + "/unsubscribe/" + symbol);
   }
 
+  function resetStockSubscription() {
+    return $http.get(baseUrl + "/resetStockSubscription");
+  }
+
+  function setSettings() {
+    return $http.post(baseUrl + "/setSettings", settings);
+  }
+
+  function getSettings() {
+    return $http.get(baseUrl + "/getSettings");
+  }
+
+  function toggleDarkMode() {
+    settings.darkMode = !settings.darkMode;
+    return $q(function (resolve, reject) {
+      setSettings().then(
+        function (r) {
+          resolve(r);
+        },
+        function (e) {
+          settings.darkMode = !settings.darkMode;
+          reject(e);
+        }
+      );
+    });
+  }
+
+  function getDarkMode() {
+    getSettings().then(function (r) {
+      // console.log(r);
+      addRemoveDarkMode(r.data);
+    });
+  }
+
+  function addRemoveDarkMode(r){
+    if (r && r.darkMode && r.darkMode == true) {
+      addDarkMode();
+      settings.darkMode = true;
+    }
+    else {
+      settings.darkMode = false;
+      removeDarkMode();
+    }
+  }
+
   return {
     connect: connect,
     disconnect: disconnect,
+    subscribeStock: subscribeStock,
+    subscribeSettings: subscribeSettings,
     wsGetAllSymbols: wsGetAllSymbols,
     getAllSymbols: getAllSymbols,
     unSubscribeAll: unSubscribeAll,
     subscribeSymbol: subscribeSymbol,
     unSubscribeSymbol: unSubscribeSymbol,
+    resetStockSubscription: resetStockSubscription,
+    getSettings: getSettings,
+    setSettings: setSettings,
+    toggleDarkMode: toggleDarkMode,
+    getDarkMode: getDarkMode,
+    addRemoveDarkMode: addRemoveDarkMode
   };
 });

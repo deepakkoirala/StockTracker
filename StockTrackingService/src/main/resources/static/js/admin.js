@@ -9,10 +9,6 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
     $scope.inputSymbol = '';
   }
 
-  $scope.getDarkClass = function () {
-    return utils.isDark();
-  };
-
   var setDataScope = function (data) {
     $scope.stockData = data;
   };
@@ -24,10 +20,6 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
     });
   };
 
-  var refetchSymbols = function(){
-    setTimeout(showAllSymbols, 1000);
-  }
-
   $scope.unSubscribeAll = function () {
     connection.unSubscribeAll().then(function (r) {
       // console.log(r);
@@ -38,7 +30,7 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
   $scope.subscribeSymbol = function (symbol) {
     connection.subscribeSymbol(symbol).then(function (r) {
       // console.log(r);
-      refetchSymbols();
+      showAllSymbols();
       cleanInputSym();
     });
   };
@@ -50,7 +42,25 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
     });
   };
 
+  $scope.resetStockSubscription = function(){
+    connection.resetStockSubscription().then(function(r){
+      showAllSymbols();
+    })
+  }
+
+  $scope.toggleDarkMode = function(){
+    connection.toggleDarkMode().then(function(r){
+      // console.log(r);
+      connection.getDarkMode();
+    })
+  }
+
+  checkDarkMode = function(){
+    connection.getDarkMode();
+  }
+
   var init = function () {
+    checkDarkMode();
     showAllSymbols();
   };
 
