@@ -42,7 +42,25 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
     });
   };
 
+  $scope.resetStockSubscription = function(){
+    connection.resetStockSubscription().then(function(r){
+      showAllSymbols();
+    })
+  }
+
+  $scope.toggleDarkMode = function(){
+    connection.toggleDarkMode().then(function(r){
+      // console.log(r);
+      connection.getDarkMode();
+    })
+  }
+
+  checkDarkMode = function(){
+    connection.getDarkMode();
+  }
+
   var init = function () {
+    checkDarkMode();
     showAllSymbols();
   };
 

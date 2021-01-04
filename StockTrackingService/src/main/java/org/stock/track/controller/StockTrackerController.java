@@ -79,15 +79,21 @@ public class StockTrackerController {
         return webSocketService.reset();
     }
 
-    @PostMapping("/stock-track/setSetting")
+    @PostMapping("/stock-track/setSettings")
     @ResponseBody
     public SubscribeResponse setSetting(@RequestBody Map<String,Object> setting) {
         return webSocketService.propagateSetting(setting);
     }
 
-    @SubscribeMapping("/stock-track/getSettings")
+    @RequestMapping("/stock-track/getSettings")
     @ResponseBody
     public Map<String,Object> getSettings() {
+        return webSocketService.getSettings();
+    }
+
+    @SubscribeMapping("/stock-track/getSettings")
+    @ResponseBody
+    public Map<String,Object> getSocketSettings() {
         return webSocketService.getSettings();
     }
 }

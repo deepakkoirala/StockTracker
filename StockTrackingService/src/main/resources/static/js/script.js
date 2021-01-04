@@ -6,6 +6,14 @@ var isDark = function () {
   return hour >= 20 || hour <= 7 ? "dark" : "";
 };
 
+var addDarkMode = function(){
+  document.querySelector("body").classList.add("dark");
+}
+
+var removeDarkMode = function(){
+  document.querySelector("body").classList.remove("dark");
+}
+
 app.service("utils", function () {
   return {
     isDark: isDark,
@@ -14,8 +22,8 @@ app.service("utils", function () {
 
 angular.element(document).ready(function () {
   var checkDark = function () {
-    if (isDark()) document.querySelector("body").classList.add("dark");
-    else document.querySelector("body").classList.remove("dark");
+    if (isDark()) addDarkMode();
+    else removeDarkMode();
   };
 
   checkDark();
