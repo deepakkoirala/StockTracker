@@ -180,7 +180,7 @@ public class StockClientClient extends WebSocketClient {
         logger.debug(stockSymbol + " unsubscribed");
     }
 
-    public SubscribeResponse propagateSetting(JSONObject settings) {
+    public SubscribeResponse propagateSetting(Map<String,Object> settings) {
         SubscribeResponse subscribeResponse = new SubscribeResponse();
         try {
             simpMessagingTemplate.convertAndSend("/topic/updateSetting", settings);

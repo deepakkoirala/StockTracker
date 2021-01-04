@@ -14,6 +14,7 @@ import org.stock.track.pojo.SubscribeResponse;
 import org.stock.track.service.WebSocketService;
 
 import java.util.Collection;
+import java.util.Map;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
@@ -80,13 +81,13 @@ public class StockTrackerController {
 
     @PostMapping("/stock-track/setSetting")
     @ResponseBody
-    public SubscribeResponse setSetting(@RequestBody JSONObject setting) {
+    public SubscribeResponse setSetting(@RequestBody Map<String,Object> setting) {
         return webSocketService.propagateSetting(setting);
     }
 
-    @RequestMapping("/stock-track/getSettings")
+    @SubscribeMapping("/stock-track/getSettings")
     @ResponseBody
-    public JSONObject getSettings() {
+    public Map<String,Object> getSettings() {
         return webSocketService.getSettings();
     }
 }
