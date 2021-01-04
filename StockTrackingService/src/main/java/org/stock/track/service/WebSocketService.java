@@ -11,6 +11,8 @@ import org.stock.track.websocket.StockClientClient;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class WebSocketService {
@@ -18,6 +20,8 @@ public class WebSocketService {
 
     @Autowired
     private StockClientClient stockClientClient;
+
+    private Map<String, Object> settings = new HashMap<>();
 
     @PostConstruct
     private void connectSocket() {
@@ -68,7 +72,6 @@ public class WebSocketService {
         return subscribeResponse;
     }
 
-
     public static JSONObject getSubscribeMessage(String symbol) {
         JSONObject obj = new JSONObject();
         obj.put("type", "subscribe");
@@ -89,5 +92,21 @@ public class WebSocketService {
 
     public SubscribeResponse unsubscribeAll() {
         return stockClientClient.unsubscribeAll();
+    }
+
+    public SubscribeResponse reset() {
+        SubscribeResponse subscribeResponse = stockClientClient.unsubscribeAll();
+        if (subscribeResponse.getSuccess())
+            stockClientClient.subscribeToAllDefaultList();
+        return subscribeResponse;
+    }
+
+    public SubscribeResponse propagateSetting(Map<String, Object> settings) {
+        this.settings = settings;
+        return stockClientClient.propagateSetting(settings);
+    }
+
+    public Map<String, Object> getSettings() {
+        return this.settings;
     }
 }

@@ -2,21 +2,19 @@ package org.stock.track.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.stock.track.pojo.CurrentStockValueResponse;
 import org.stock.track.pojo.SubscribeResponse;
 import org.stock.track.service.WebSocketService;
 
 import java.util.Collection;
+import java.util.Map;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
@@ -73,5 +71,23 @@ public class StockTrackerController {
     @SubscribeMapping("/updateService")
     public Collection<CurrentStockValueResponse> sendAllSubscribedStocks() {
         return webSocketService.getAllSubscribedStocks();
+    }
+
+    @RequestMapping("/stock-track/resetStockSubscription")
+    @ResponseBody
+    public SubscribeResponse resetStockSubscription() {
+        return webSocketService.reset();
+    }
+
+    @PostMapping("/stock-track/setSetting")
+    @ResponseBody
+    public SubscribeResponse setSetting(@RequestBody Map<String,Object> setting) {
+        return webSocketService.propagateSetting(setting);
+    }
+
+    @SubscribeMapping("/stock-track/getSettings")
+    @ResponseBody
+    public Map<String,Object> getSettings() {
+        return webSocketService.getSettings();
     }
 }
