@@ -3,11 +3,11 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
     // {symbol: "aapl"}
   ];
 
-  $scope.inputSymbol = '';
+  $scope.inputSymbol = "";
 
-  var cleanInputSym = function(){
-    $scope.inputSymbol = '';
-  }
+  var cleanInputSym = function () {
+    $scope.inputSymbol = "";
+  };
 
   var setDataScope = function (data) {
     $scope.stockData = data;
@@ -42,22 +42,26 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
     });
   };
 
-  $scope.resetStockSubscription = function(){
-    connection.resetStockSubscription().then(function(r){
+  $scope.resetStockSubscription = function () {
+    connection.resetStockSubscription().then(function (r) {
       showAllSymbols();
-    })
-  }
+      connection.resetDarkMode().then(function (e) {
+        console.log("Application Resettted...");
+        startDarkMode();
+      });
+    });
+  };
 
-  $scope.toggleDarkMode = function(){
-    connection.toggleDarkMode().then(function(r){
+  $scope.toggleDarkMode = function () {
+    connection.toggleDarkMode().then(function (r) {
       // console.log(r);
       connection.getDarkMode();
-    })
-  }
+    });
+  };
 
-  checkDarkMode = function(){
+  checkDarkMode = function () {
     connection.getDarkMode();
-  }
+  };
 
   var init = function () {
     checkDarkMode();

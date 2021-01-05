@@ -106,16 +106,34 @@ app.service("connection", function ($http, $q) {
     });
   }
 
-  function addRemoveDarkMode(r){
-    clearDarkModeTimer();
-    if (r && r.darkMode && r.darkMode == true) {
-      addDarkMode();
-      settings.darkMode = true;
+  function addRemoveDarkMode(r) {
+    if (r && r.darkMode != undefined) {
+      clearDarkModeTimer();
+      if (r.darkMode == true) {
+        addDarkMode();
+        settings.darkMode = true;
+      } else {
+        settings.darkMode = false;
+        removeDarkMode();
+      }
     }
-    else {
-      settings.darkMode = false;
-      removeDarkMode();
-    }
+  }
+
+  function resetDarkMode() {
+    var tmp = settings.darkMode;
+    delete settings.darkMode;
+    // console.log(settings);
+    return $q(function (resolve, reject) {
+      setSettings().then(
+        function (r) {
+          resolve(r);
+        },
+        function (e) {
+          settings.darkMode = tmp;
+          reject(e);
+        }
+      );
+    });
   }
 
   return {
@@ -133,6 +151,7 @@ app.service("connection", function ($http, $q) {
     setSettings: setSettings,
     toggleDarkMode: toggleDarkMode,
     getDarkMode: getDarkMode,
-    addRemoveDarkMode: addRemoveDarkMode
+    addRemoveDarkMode: addRemoveDarkMode,
+    resetDarkMode: resetDarkMode,
   };
 });

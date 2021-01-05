@@ -15,10 +15,32 @@ var removeDarkMode = function () {
 };
 
 var darkModeTimer;
+var intervalRunning = false;
 
-var clearDarkModeTimer = function(){
-  clearInterval(darkModeTimer);
-}
+var checkDark = function () {
+  if (isDark()) addDarkMode();
+  else removeDarkMode();
+};
+
+var clearDarkModeTimer = function () {
+  if (intervalRunning) {
+    clearInterval(darkModeTimer);
+    intervalRunning = false;
+  }
+};
+
+var startDarkModeTimer = function () {
+  if (!intervalRunning) {
+    darkModeTimer = setInterval(checkDark, 60000);
+    intervalRunning = true;
+  }
+};
+
+var startDarkMode = function () {
+  checkDark();
+
+  startDarkModeTimer();
+};
 
 app.service("utils", function () {
   return {
@@ -27,13 +49,7 @@ app.service("utils", function () {
 });
 
 angular.element(document).ready(function () {
-  var checkDark = function () {
-    if (isDark()) addDarkMode();
-    else removeDarkMode();
-  };
-
-  checkDark();
-  darkModeTimer = setInterval(checkDark, 60000);
+  startDarkMode();
 });
 
 app.controller("mainCtrl", function ($scope, $http, connection, utils) {
@@ -72,8 +88,9 @@ app.controller("mainCtrl", function ($scope, $http, connection, utils) {
         });
 
         connection.subscribeSettings(function (data) {
-          console.log(data);
-          connection.addRemoveDarkMode(data);
+          if (data.darkMode != undefined) {
+            connection.addRemoveDarkMode(data);
+          } else startDarkMode();
         });
       }
     });
