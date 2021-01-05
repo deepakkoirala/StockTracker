@@ -2,7 +2,7 @@ app.service("connection", function ($http, $q) {
   var stompClient = null;
 
   settings = {
-    darkMode: false,
+    darkMode: undefined,
   };
 
   var baseUrl = "/stock-track";
@@ -85,7 +85,12 @@ app.service("connection", function ($http, $q) {
   }
 
   function toggleDarkMode() {
-    settings.darkMode = !settings.darkMode;
+    // console.log(settings);
+    if(settings.darkMode == undefined) { //if darkmode is not set, flip by current time.
+      settings.darkMode = !isDark();
+    }
+    else
+      settings.darkMode = !settings.darkMode;
     return $q(function (resolve, reject) {
       setSettings().then(
         function (r) {
