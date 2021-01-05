@@ -113,7 +113,7 @@ app.service("connection", function ($http, $q) {
 
   function addRemoveDarkMode(r) {
     if (r && r.darkMode != undefined) {
-      clearDarkModeTimer();
+      stopDarkModeTimer();
       if (r.darkMode == true) {
         addDarkMode();
         settings.darkMode = true;
@@ -121,6 +121,9 @@ app.service("connection", function ($http, $q) {
         settings.darkMode = false;
         removeDarkMode();
       }
+    }
+    else if (r && r.darkMode == undefined){
+      startTimeBasedDarkMode();
     }
   }
 
@@ -131,6 +134,7 @@ app.service("connection", function ($http, $q) {
     return $q(function (resolve, reject) {
       setSettings().then(
         function (r) {
+          startTimeBasedDarkMode();
           resolve(r);
         },
         function (e) {

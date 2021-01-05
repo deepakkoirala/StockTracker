@@ -47,7 +47,7 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
       showAllSymbols();
       connection.resetDarkMode().then(function (e) {
         console.log("Application Resettted...");
-        startDarkMode();
+        // startTimeBasedDarkMode();
       });
     });
   };
