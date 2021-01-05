@@ -14,6 +14,12 @@ var removeDarkMode = function () {
   document.querySelector("body").classList.remove("dark");
 };
 
+var darkModeTimer;
+
+var clearDarkModeTimer = function(){
+  clearInterval(darkModeTimer);
+}
+
 app.service("utils", function () {
   return {
     isDark: isDark,
@@ -27,7 +33,7 @@ angular.element(document).ready(function () {
   };
 
   checkDark();
-  setInterval(checkDark, 60000);
+  darkModeTimer = setInterval(checkDark, 60000);
 });
 
 app.controller("mainCtrl", function ($scope, $http, connection, utils) {

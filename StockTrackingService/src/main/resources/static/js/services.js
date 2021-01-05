@@ -107,6 +107,7 @@ app.service("connection", function ($http, $q) {
   }
 
   function addRemoveDarkMode(r){
+    clearDarkModeTimer();
     if (r && r.darkMode && r.darkMode == true) {
       addDarkMode();
       settings.darkMode = true;
