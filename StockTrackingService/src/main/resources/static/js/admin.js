@@ -55,7 +55,7 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
   $scope.toggleDarkMode = function () {
     connection.toggleDarkMode().then(function (r) {
       // console.log(r);
-      connection.getDarkMode();
+      checkDarkMode();
     });
   };
 
