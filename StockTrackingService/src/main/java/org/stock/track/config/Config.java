@@ -20,6 +20,9 @@ public class Config {
     @Value("${URL}")
     private String URL;
 
+    @Value("${search.url}")
+    private String searchUrl;
+
     @Bean
     public URI serverURI() {
         try {
@@ -29,5 +32,10 @@ public class Config {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Bean
+    public String searchPath() {
+        return searchUrl + "?token=" + key;
     }
 }

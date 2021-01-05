@@ -9,7 +9,9 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.*;
 import org.stock.track.pojo.CurrentStockValueResponse;
+import org.stock.track.pojo.SearchResult;
 import org.stock.track.pojo.SubscribeResponse;
+import org.stock.track.service.SearchService;
 import org.stock.track.service.WebSocketService;
 
 import java.util.Collection;
@@ -23,7 +25,10 @@ public class StockTrackerController {
     private static final Log logger = LogFactory.getLog(StockTrackerController.class);
 
     @Autowired
-    WebSocketService webSocketService;
+    private WebSocketService webSocketService;
+
+    @Autowired
+    private SearchService searchService;
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public String redirect(ServletResponse response) {
@@ -80,19 +85,25 @@ public class StockTrackerController {
 
     @PostMapping("/stock-track/setSettings")
     @ResponseBody
-    public SubscribeResponse setSetting(@RequestBody Map<String,Object> setting) {
+    public SubscribeResponse setSetting(@RequestBody Map<String, Object> setting) {
         return webSocketService.propagateSetting(setting);
     }
 
     @RequestMapping("/stock-track/getSettings")
     @ResponseBody
-    public Map<String,Object> getSettings() {
+    public Map<String, Object> getSettings() {
         return webSocketService.getSettings();
     }
 
     @SubscribeMapping("/getSettings")
     @ResponseBody
-    public Map<String,Object> getSocketSettings() {
+    public Map<String, Object> getSocketSettings() {
         return webSocketService.getSettings();
+    }
+
+    @RequestMapping("/stock-track/search")
+    @ResponseBody
+    public SearchResult search(@RequestParam String query) {
+        return searchService.search(query);
     }
 }

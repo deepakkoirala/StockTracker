@@ -12,6 +12,7 @@ import org.stock.track.websocket.StockClientClient;
 import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
@@ -109,4 +110,5 @@ public class WebSocketService {
     public Map<String, Object> getSettings() {
         return this.settings;
     }
+
 }
