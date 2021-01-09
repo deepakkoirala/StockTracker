@@ -2,7 +2,7 @@ app.service("connection", function ($http, $q) {
   var stompClient = null;
 
   settings = {
-    darkMode: false,
+    darkMode: undefined,
   };
 
   var baseUrl = "/stock-track";
@@ -85,7 +85,12 @@ app.service("connection", function ($http, $q) {
   }
 
   function toggleDarkMode() {
-    settings.darkMode = !settings.darkMode;
+    // console.log(settings);
+    if(settings.darkMode == undefined) { //if darkmode is not set, flip by current time.
+      settings.darkMode = !isDark();
+    }
+    else
+      settings.darkMode = !settings.darkMode;
     return $q(function (resolve, reject) {
       setSettings().then(
         function (r) {
@@ -106,15 +111,38 @@ app.service("connection", function ($http, $q) {
     });
   }
 
-  function addRemoveDarkMode(r){
-    if (r && r.darkMode && r.darkMode == true) {
-      addDarkMode();
-      settings.darkMode = true;
+  function addRemoveDarkMode(r) {
+    if (r && r.darkMode != undefined) {
+      stopDarkModeTimer();
+      if (r.darkMode == true) {
+        addDarkMode();
+        settings.darkMode = true;
+      } else {
+        settings.darkMode = false;
+        removeDarkMode();
+      }
     }
-    else {
-      settings.darkMode = false;
-      removeDarkMode();
+    else if (r && r.darkMode == undefined){
+      startTimeBasedDarkMode();
     }
+  }
+
+  function resetDarkMode() {
+    var tmp = settings.darkMode;
+    delete settings.darkMode;
+    // console.log(settings);
+    return $q(function (resolve, reject) {
+      setSettings().then(
+        function (r) {
+          startTimeBasedDarkMode();
+          resolve(r);
+        },
+        function (e) {
+          settings.darkMode = tmp;
+          reject(e);
+        }
+      );
+    });
   }
 
   return {
@@ -132,6 +160,7 @@ app.service("connection", function ($http, $q) {
     setSettings: setSettings,
     toggleDarkMode: toggleDarkMode,
     getDarkMode: getDarkMode,
-    addRemoveDarkMode: addRemoveDarkMode
+    addRemoveDarkMode: addRemoveDarkMode,
+    resetDarkMode: resetDarkMode,
   };
 });

@@ -5,10 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubscribeResponse {
-    private Boolean success;
+@Setter
+@Getter
+public class StockSearchElement {
+    private String description;
+    private String displaySymbol;
+    private String symbol;
+    private String type;
 }

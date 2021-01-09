@@ -15,7 +15,7 @@ import java.util.TimeZone;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CurrentStockValueResponse {
-    private final static SimpleDateFormat FORMAT = new SimpleDateFormat("MM-dd hh:mm:ssaaa");
+    private final static SimpleDateFormat FORMAT = new SimpleDateFormat("MM-dd, hh:mm:ssaaa");
     private String symbol;
     private BigDecimal price;
     private long timestamp;

@@ -14,6 +14,30 @@ var removeDarkMode = function () {
   document.querySelector("body").classList.remove("dark");
 };
 
+var darkModeTimer;
+var intervalRunning = false;
+
+var stopDarkModeTimer = function () {
+  if (intervalRunning) {
+    clearInterval(darkModeTimer);
+    intervalRunning = false;
+  }
+};
+
+var startDarkModeTimer = function () {
+  if (!intervalRunning) {
+    darkModeTimer = setInterval(checkDark, 60000);
+    intervalRunning = true;
+  }
+};
+
+var startTimeBasedDarkMode = function () {
+  if (isDark()) addDarkMode();
+  else removeDarkMode();
+
+  startDarkModeTimer();
+};
+
 app.service("utils", function () {
   return {
     isDark: isDark,
@@ -21,13 +45,7 @@ app.service("utils", function () {
 });
 
 angular.element(document).ready(function () {
-  var checkDark = function () {
-    if (isDark()) addDarkMode();
-    else removeDarkMode();
-  };
-
-  checkDark();
-  setInterval(checkDark, 60000);
+  // startTimeBasedDarkMode();
 });
 
 app.controller("mainCtrl", function ($scope, $http, connection, utils) {
@@ -66,8 +84,9 @@ app.controller("mainCtrl", function ($scope, $http, connection, utils) {
         });
 
         connection.subscribeSettings(function (data) {
-          console.log(data);
+          // if (data.darkMode != undefined) {
           connection.addRemoveDarkMode(data);
+          // } else startTimeBasedDarkMode();
         });
       }
     });
