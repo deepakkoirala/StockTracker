@@ -2,7 +2,10 @@ var app = angular.module("mainApp", ["ngAnimate"]);
 
 var isDark = function () {
   var hour = new Date().getHours();
-  // hour = 20
+  // var secs = new Date().getSeconds(); //code for testing purpose
+  // hour = 20;
+  // secs = 20;
+  // return ((secs <= 30) && (hour >= 20 || hour <= 7)) ? "dark" : "";
   return hour >= 20 || hour <= 7 ? "dark" : "";
 };
 
@@ -24,17 +27,20 @@ var stopDarkModeTimer = function () {
   }
 };
 
+let checkDark = function(){
+  if (isDark()) addDarkMode();
+  else removeDarkMode();
+}
+
 var startDarkModeTimer = function () {
   if (!intervalRunning) {
-    darkModeTimer = setInterval(checkDark, 60000);
+    checkDark();
+    darkModeTimer = setInterval(checkDark, 6 * 1000);
     intervalRunning = true;
   }
 };
 
 var startTimeBasedDarkMode = function () {
-  if (isDark()) addDarkMode();
-  else removeDarkMode();
-
   startDarkModeTimer();
 };
 
