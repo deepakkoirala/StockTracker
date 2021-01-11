@@ -72,3 +72,8 @@ h3 {
 .c_tik.ng-enter.ng-enter-active {
   background: #a8dadc;
 } */
+
+#symbol_dropdown {
+  overflow-y: auto;
+  max-height: 250px;
+}

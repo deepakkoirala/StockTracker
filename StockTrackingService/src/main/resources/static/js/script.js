@@ -1,4 +1,4 @@
-var app = angular.module("mainApp", ["ngAnimate"]);
+var app = angular.module("mainApp", ["ngAnimate","angucomplete-alt"]);
 
 var isDark = function () {
   var hour = new Date().getHours();
