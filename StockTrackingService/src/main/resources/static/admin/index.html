@@ -22,6 +22,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bowser@latest/es5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angucomplete-alt/3.0.0/angucomplete-alt.min.js" integrity="sha512-UbEbKNmRpe8kOfDWGA9jLRAoOp+ntLJCCCZtZSyCXWXkLV9ZU4I7aKqjwYkghMamQYokiBoROU38MMK/R0uGzA==" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/angu-complete@2.4.1/angucomplete-alt.css">
 <script src="/js/script.js"></script>
 <script src="/js/services.js"></script>
 <script src="/js/admin.js"></script>
@@ -35,10 +37,14 @@
             <label for="symbol" class="pr-3">
               <h3>SYMBOL</h3>
             </label>
-            <input type="text" ng-model="inputSymbol" class="form-control" id="symbol" placeholder="AAPL" />
+            <!-- <input type="text" ng-model="inputSymbol" class="form-control" id="symbol" placeholder="AAPL" /> -->
+            <div angucomplete-alt id="symbol" placeholder="AAPL" pause="500" selected-object="inputSymbolObj"
+              remote-url="/stock-track/search?query=" remote-url-request-formatter="remoteUrlRequestFn"
+              remote-url-data-field="result" title-field="displaySymbol" description-field="description" minlength="1"
+              input-class="form-control form-control-small" match-class="highlight" input-changed="inputChanged"></div>
           </div>
           <div class="form-group ml-3 mb-2 mt-5">
-            <button type="submit" class="btn btn-success" ng-click="subscribeSymbol(inputSymbol)">
+            <button type="submit" class="btn btn-success" ng-click="subscribeSymbol(inputSymbolObj.title)">
               Add
             </button>
           </div>
@@ -66,10 +72,14 @@
         </div>
         <div class="row pt-2 mb-5">
           <div class="col-6">
-            <button class="btn btn-primary" ng-click="resetStockSubscription()">Reset</button>
+            <button class="btn btn-primary" ng-click="resetStockSubscription()">
+              Reset
+            </button>
           </div>
           <div class="col-6 text-right">
-            <button class="btn btn-primary" ng-click="toggleDarkMode()">Toggle Dark Mode</button>
+            <button class="btn btn-primary" ng-click="toggleDarkMode()">
+              Toggle Dark Mode
+            </button>
           </div>
         </div>
       </div>

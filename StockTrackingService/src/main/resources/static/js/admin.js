@@ -4,10 +4,16 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
   ];
 
   $scope.inputSymbol = "";
+  $scope.inputSymbolObj = {};
 
   var cleanInputSym = function () {
     $scope.inputSymbol = "";
+    $scope.$broadcast('angucomplete-alt:clearInput');
   };
+
+  $scope.inputChanged = function(e){
+    $scope.inputSymbol = e;
+  }
 
   var setDataScope = function (data) {
     $scope.stockData = data;
@@ -28,6 +34,8 @@ app.controller("adminCtrl", function ($scope, $http, connection, utils) {
   };
 
   $scope.subscribeSymbol = function (symbol) {
+    if(!symbol)
+      symbol = $scope.inputSymbol;
     connection.subscribeSymbol(symbol).then(function (r) {
       // console.log(r);
       showAllSymbols();
