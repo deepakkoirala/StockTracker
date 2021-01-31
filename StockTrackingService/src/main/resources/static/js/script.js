@@ -27,7 +27,7 @@ var stopDarkModeTimer = function () {
   }
 };
 
-let checkDark = function(){
+var checkDark = function(){
   if (isDark()) addDarkMode();
   else removeDarkMode();
 }
