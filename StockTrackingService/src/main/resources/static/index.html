@@ -32,7 +32,7 @@
               <div class="c_tik">
                 <h2 class="ovflow">{{x.symbol}}</h2>
                 <h3 class="{{x.currentProgress}} ovflow">
-                  ${{x.price | number}}
+                  ${{x.price | numberFormat: 6}}
                 </h3>
                 <div class="timestamp ovflow" ng-if="x.timestamp">
                   As of {{x.timestamp | date: "yyyy-MM-dd hh:mm:ssa"}}

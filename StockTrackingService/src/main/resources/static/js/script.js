@@ -1,4 +1,14 @@
-var app = angular.module("mainApp", ["ngAnimate","angucomplete-alt"]);
+var app = angular.module("mainApp", ["ngAnimate", "angucomplete-alt"]);
+
+app.filter("numberFormat", function () {
+  return function (input, num) {
+    // console.log(input, num);
+    if (input) {
+      if (!num) num = 4;
+      return Number(input.toFixed(num)).toString();
+    } else return input;
+  };
+});
 
 var isDark = function () {
   var hour = new Date().getHours();
@@ -27,10 +37,10 @@ var stopDarkModeTimer = function () {
   }
 };
 
-var checkDark = function(){
+var checkDark = function () {
   if (isDark()) addDarkMode();
   else removeDarkMode();
-}
+};
 
 var startDarkModeTimer = function () {
   if (!intervalRunning) {
