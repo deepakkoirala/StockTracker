@@ -11,7 +11,7 @@ app.filter("numberFormat", function () {
 });
 app.filter("filterSymbolName", function () {
   return function (input) {
-    return input.replace("BINANCE:", "");
+    return input.replace("BINANCE:", "").replace("USDT","");
   };
 });
 
