@@ -60,7 +60,7 @@
               <div class="close closeIcon" ng-click="unSubscribeSymbol(x.symbol)">
                 &times;
               </div>
-              <h2 class="ovflow">{{x.symbol}}</h2>
+              <h2 class="ovflow">{{x.symbol | filterSymbolName}}</h2>
               <h3 class="{{x.currentProgress}} ovflow">
                 {{x.price.toFixed(2) | currency}}
               </h3>
