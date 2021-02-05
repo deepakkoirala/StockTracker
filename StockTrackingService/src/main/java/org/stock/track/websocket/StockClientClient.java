@@ -17,6 +17,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 import org.stock.track.pojo.CurrentProgress;
 import org.stock.track.pojo.CurrentStockValueResponse;
 import org.stock.track.pojo.SubscribeResponse;
+import org.stock.track.service.SymbolUtilsService;
 import org.stock.track.service.WebSocketService;
 
 import java.math.BigDecimal;
@@ -33,6 +34,9 @@ public class StockClientClient extends WebSocketClient {
 
     @Value("#{'${defaultStocks}'.split(',')}")
     private List<String> defaultStockList;
+
+    @Autowired
+    private SymbolUtilsService symbolutilsservice;
 
     private final Map<String, CurrentStockValueResponse> cache = Collections.synchronizedSortedMap(new TreeMap<>());
 
@@ -111,7 +115,7 @@ public class StockClientClient extends WebSocketClient {
                         }
                     }
                 }
-                CurrentStockValueResponse rs = new CurrentStockValueResponse(stockSymbol, lastPrice, timestamp, progress);
+                CurrentStockValueResponse rs = symbolutilsservice.CreateSymbolResponseObject(stockSymbol, lastPrice, timestamp, progress);
                 logger.debug(stockSymbol + " at price " + lastPrice + " at " + calendar.getTime());
                 responseMap.put(stockSymbol, rs);
                 synchronized (cache) {
