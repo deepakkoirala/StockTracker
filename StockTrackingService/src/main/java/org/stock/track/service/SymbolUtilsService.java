@@ -1,10 +1,7 @@
 package org.stock.track.service;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,19 +18,6 @@ public class SymbolUtilsService {
     @Value("${typeFilter}")
     private String typeFilter;
 
-    private Map<String, String> getSymbolLabelFilter() {
-        JSONObject jObject = new JSONObject(this.symbolLabelFilter);
-        Iterator<?> keys = jObject.keys();
-        HashMap<String, String> symMap = new HashMap<String, String>();
-        while (keys.hasNext()) {
-            String key = (String) keys.next();
-            String value = jObject.getString(key);
-            symMap.put(key, value);
-
-        }
-        return symMap;
-    }
-
     public CurrentStockValueResponse createSymbolResponseObject(String symbolName, BigDecimal lastPrice, Long timestamp,
             CurrentProgress progress) {
         String symbol = this.getReplacedSymbolname(symbolName);
@@ -42,9 +26,11 @@ public class SymbolUtilsService {
     }
 
     private String getReplacedSymbolname(String symbol) {
-        for (Entry<String, String> entry : this.getSymbolLabelFilter().entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
+        JSONObject jObject = new JSONObject(this.symbolLabelFilter);
+        Iterator<?> keys = jObject.keys();
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            String value = jObject.getString(key);
             symbol = symbol.replace(key, value.toString());
         }
         return symbol;
