@@ -115,7 +115,7 @@ public class StockClientClient extends WebSocketClient {
                         }
                     }
                 }
-                CurrentStockValueResponse rs = symbolutilsservice.CreateSymbolResponseObject(stockSymbol, lastPrice, timestamp, progress);
+                CurrentStockValueResponse rs = symbolutilsservice.createSymbolResponseObject(stockSymbol, lastPrice, timestamp, progress);
                 logger.debug(stockSymbol + " at price " + lastPrice + " at " + calendar.getTime());
                 responseMap.put(stockSymbol, rs);
                 synchronized (cache) {

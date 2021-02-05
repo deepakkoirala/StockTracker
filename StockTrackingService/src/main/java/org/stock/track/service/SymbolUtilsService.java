@@ -34,7 +34,7 @@ public class SymbolUtilsService {
         return symMap;
     }
 
-    public CurrentStockValueResponse CreateSymbolResponseObject(String symbolName, BigDecimal lastPrice, Long timestamp,
+    public CurrentStockValueResponse createSymbolResponseObject(String symbolName, BigDecimal lastPrice, Long timestamp,
             CurrentProgress progress) {
         String symbol = this.getReplacedSymbolname(symbolName);
         String type = this.getSymbolType(symbolName);
