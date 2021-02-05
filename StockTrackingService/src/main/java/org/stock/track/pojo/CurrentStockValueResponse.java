@@ -16,18 +16,30 @@ import java.util.TimeZone;
 @NoArgsConstructor
 public class CurrentStockValueResponse {
     private final static SimpleDateFormat FORMAT = new SimpleDateFormat("MM-dd, hh:mm:ssaaa");
-    private String symbol;
+    private String symbolName;
     private BigDecimal price;
     private long timestamp;
     private CurrentProgress currentProgress;
 
     public CurrentStockValueResponse(String symbol, CurrentProgress progress) {
-        this.symbol = symbol;
+        this.symbolName = symbol;
         this.currentProgress = progress;
     }
 
     public String getTimeString() {
         FORMAT.setTimeZone(TimeZone.getTimeZone("America/Chicago"));
         return FORMAT.format(new Date(timestamp));
+    }
+
+    public String getSymbol(){
+        return this.symbolName.replace("BINANCE:","").replace("USDT","");
+    }
+
+    public String getType(){
+        if(this.symbolName.contains("BINANCE:")){
+            return "CRYPTO";
+        }
+        else
+            return "STOCK";
     }
 }
