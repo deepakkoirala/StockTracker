@@ -145,7 +145,7 @@ public class StockClientClient extends WebSocketClient {
     }
 
     public void onSubscribe(String stockSymbol) {
-        cache.put(stockSymbol, new CurrentStockValueResponse(symbolUtilsService.getReplacedSymbolName(stockSymbol), CurrentProgress.NEW));
+        cache.put(stockSymbol, symbolUtilsService.createSymbolResponseObject(stockSymbol, null, null, CurrentProgress.NEW););
         simpMessagingTemplate.convertAndSend("/topic/updateService", cache.values());
     }
 
