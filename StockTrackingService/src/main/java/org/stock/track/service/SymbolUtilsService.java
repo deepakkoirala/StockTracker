@@ -73,13 +73,16 @@ public class SymbolUtilsService {
     }
 
     public String getSymbolType(String symbol) {
+        int i = symbol.indexOf(":");
+        if (i > -1) {
+            symbol = symbol.substring(0, i);
+        }
         for (Map.Entry<String, Set<String>> e : typeFilterMap.entrySet()) {
-            for (String f : e.getValue()) {
-                if (symbol.contains(f)) {
-                    return e.getKey();
-                }
+            if(e.getValue().contains(symbol)){
+                return e.getKey();
             }
         }
+
         return DEFAULT_TYPE;
     }
 }
