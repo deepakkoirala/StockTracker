@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 @Getter
 @Setter
@@ -27,5 +29,8 @@ public class CurrentStockValueResponse {
         this.currentProgress = progress;
     }
 
-
+    public String getTimeString() {
+        FORMAT.setTimeZone(TimeZone.getTimeZone("America/Chicago"));
+        return FORMAT.format(new Date(timestamp));
+    }
 }

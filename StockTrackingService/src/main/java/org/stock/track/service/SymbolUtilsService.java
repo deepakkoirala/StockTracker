@@ -62,14 +62,14 @@ public class SymbolUtilsService {
         return new CurrentStockValueResponse(symbol, symbolName, lastPrice, timestamp, progress, type);
     }
 
-    private String getReplacedSymbolName(String symbol) {
+    public String getReplacedSymbolName(String symbol) {
         for (Map.Entry<String, String> e : symbolLabelFilterMap.entrySet()) {
             symbol = symbol.replace(e.getKey(), e.getValue());
         }
         return symbol;
     }
 
-    private String getSymbolType(String symbol) {
+    public String getSymbolType(String symbol) {
         for(Map.Entry<String, Set<String>> e:typeFilterMap.entrySet()){
             if(e.getValue().contains(symbol)){
                 return e.getKey();
