@@ -36,7 +36,7 @@ public class StockClientClient extends WebSocketClient {
     private List<String> defaultStockList;
 
     @Autowired
-    private SymbolUtilsService symbolutilsservice;
+    private SymbolUtilsService symbolUtilsService;
 
     private final Map<String, CurrentStockValueResponse> cache = Collections.synchronizedSortedMap(new TreeMap<>());
 
@@ -53,7 +53,7 @@ public class StockClientClient extends WebSocketClient {
         if (isOpen()) {
             String bt = WebSocketService.getSubscribeMessage(stockSymbol).toString();
             send(bt);
-            cache.put(stockSymbol, new CurrentStockValueResponse(stockSymbol, CurrentProgress.NEW));
+            cache.put(stockSymbol, symbolUtilsService.createSymbolResponseObject(stockSymbol, null, null, CurrentProgress.NEW));
             logger.info(stockSymbol + " subscribed");
         }
     }
@@ -115,7 +115,7 @@ public class StockClientClient extends WebSocketClient {
                         }
                     }
                 }
-                CurrentStockValueResponse rs = symbolutilsservice.createSymbolResponseObject(stockSymbol, lastPrice, timestamp, progress);
+                CurrentStockValueResponse rs = symbolUtilsService.createSymbolResponseObject(stockSymbol, lastPrice, timestamp, progress);
                 logger.debug(stockSymbol + " at price " + lastPrice + " at " + calendar.getTime());
                 responseMap.put(stockSymbol, rs);
                 synchronized (cache) {
@@ -145,7 +145,7 @@ public class StockClientClient extends WebSocketClient {
     }
 
     public void onSubscribe(String stockSymbol) {
-        cache.put(stockSymbol, new CurrentStockValueResponse(stockSymbol, CurrentProgress.NEW));
+        cache.put(stockSymbol, symbolUtilsService.createSymbolResponseObject(stockSymbol, null, null, CurrentProgress.NEW));
         simpMessagingTemplate.convertAndSend("/topic/updateService", cache.values());
     }
 

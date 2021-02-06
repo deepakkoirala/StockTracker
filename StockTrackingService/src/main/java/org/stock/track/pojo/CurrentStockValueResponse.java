@@ -33,5 +33,4 @@ public class CurrentStockValueResponse {
         FORMAT.setTimeZone(TimeZone.getTimeZone("America/Chicago"));
         return FORMAT.format(new Date(timestamp));
     }
-
 }
