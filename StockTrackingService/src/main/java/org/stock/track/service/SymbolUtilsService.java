@@ -56,10 +56,13 @@ public class SymbolUtilsService {
     }
 
     public CurrentStockValueResponse createSymbolResponseObject(String symbolName, BigDecimal lastPrice, Long timestamp,
-                                                                CurrentProgress progress) {
+            CurrentProgress progress) {
         String symbol = this.getReplacedSymbolName(symbolName);
         String type = this.getSymbolType(symbolName);
-        return new CurrentStockValueResponse(symbol, symbolName, lastPrice, timestamp, progress, type);
+        if (lastPrice != null)
+            return new CurrentStockValueResponse(symbol, symbolName, lastPrice, timestamp, progress, type);
+        else
+            return new CurrentStockValueResponse(symbol, symbolName, null, 0, CurrentProgress.NEW, type);
     }
 
     public String getReplacedSymbolName(String symbol) {
@@ -70,8 +73,8 @@ public class SymbolUtilsService {
     }
 
     public String getSymbolType(String symbol) {
-        for(Map.Entry<String, Set<String>> e:typeFilterMap.entrySet()){
-            if(e.getValue().contains(symbol)){
+        for (Map.Entry<String, Set<String>> e : typeFilterMap.entrySet()) {
+            if (e.getValue().contains(symbol)) {
                 return e.getKey();
             }
         }
