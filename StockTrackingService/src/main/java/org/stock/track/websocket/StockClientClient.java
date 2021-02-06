@@ -53,7 +53,7 @@ public class StockClientClient extends WebSocketClient {
         if (isOpen()) {
             String bt = WebSocketService.getSubscribeMessage(stockSymbol).toString();
             send(bt);
-            cache.put(stockSymbol, new CurrentStockValueResponse(stockSymbol, CurrentProgress.NEW));
+            cache.put(stockSymbol, symbolUtilsService.createSymbolResponseObject(stockSymbol, null, null, CurrentProgress.NEW));
             logger.info(stockSymbol + " subscribed");
         }
     }
@@ -145,7 +145,7 @@ public class StockClientClient extends WebSocketClient {
     }
 
     public void onSubscribe(String stockSymbol) {
-        cache.put(stockSymbol, symbolUtilsService.createSymbolResponseObject(stockSymbol, null, null, CurrentProgress.NEW););
+        cache.put(stockSymbol, symbolUtilsService.createSymbolResponseObject(stockSymbol, null, null, CurrentProgress.NEW));
         simpMessagingTemplate.convertAndSend("/topic/updateService", cache.values());
     }
 
