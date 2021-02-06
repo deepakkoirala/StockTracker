@@ -74,8 +74,10 @@ public class SymbolUtilsService {
 
     public String getSymbolType(String symbol) {
         for (Map.Entry<String, Set<String>> e : typeFilterMap.entrySet()) {
-            if (e.getValue().contains(symbol)) {
-                return e.getKey();
+            for (String f : e.getValue()) {
+                if (symbol.contains(f)) {
+                    return e.getKey();
+                }
             }
         }
         return DEFAULT_TYPE;
