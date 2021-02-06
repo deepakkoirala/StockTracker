@@ -9,11 +9,6 @@ app.filter("numberFormat", function () {
     } else return input;
   };
 });
-app.filter("filterSymbolName", function () {
-  return function (input) {
-    return input.replace("BINANCE:", "").replace("USDT","");
-  };
-});
 
 var isDark = function () {
   var hour = new Date().getHours();

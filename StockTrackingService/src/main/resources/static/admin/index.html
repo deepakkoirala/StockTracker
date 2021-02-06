@@ -60,9 +60,9 @@
               <div class="close closeIcon" ng-click="unSubscribeSymbol(x.symbolName)">
                 &times;
               </div>
-              <h2 class="ovflow">{{x.symbol | filterSymbolName}}</h2>
-              <h3 class="{{x.currentProgress}} ovflow">
-                {{x.price.toFixed(2) | currency}}
+              <h2 class="ovflow">{{x.symbol}}</h2>
+              <h3 class="{{x.currentProgress}} ovflow" ng-if="x.price">
+                ${{x.price.toFixed(2)}}
               </h3>
               <div class="timestamp ovflow" ng-if="x.timestamp">
                 As of {{x.timestamp | date: "yyyy-MM-dd hh:mm:ssa"}}

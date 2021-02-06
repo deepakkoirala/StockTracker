@@ -30,10 +30,10 @@
           <div class="row">
             <div class="col-md-3 col-6" ng-repeat="x in stockData">
               <div class="c_tik">
-                <h2 class="ovflow">{{x.symbol | filterSymbolName}}</h2>
-                <h3 class="{{x.currentProgress}} ovflow">
+                <h2 class="ovflow">{{x.symbol}}</h2>
+                <h3 class="{{x.currentProgress}} ovflow" ng-if="x.price">
                   <span ng-if="x.type=='CRYPTO'">${{x.price | numberFormat: 6}}</span>
-                  <span ng-if="x.type=='STOCK'">{{x.price.toFixed(2) | currency}}</span>
+                  <span ng-if="x.type=='STOCK'">${{x.price.toFixed(2)}}</span>
                 </h3>
                 <div class="timestamp ovflow" ng-if="x.timestamp">
                   As of {{x.timestamp | date: "yyyy-MM-dd hh:mm:ssa"}}
