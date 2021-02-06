@@ -57,7 +57,7 @@
         <div class="row">
           <div class="col-md-3 col-6" ng-repeat="x in stockData">
             <div class="c_tik">
-              <div class="close closeIcon" ng-click="unSubscribeSymbol(x.symbol)">
+              <div class="close closeIcon" ng-click="unSubscribeSymbol(x.symbolName)">
                 &times;
               </div>
               <h2 class="ovflow">{{x.symbol | filterSymbolName}}</h2>
